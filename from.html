@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biểu Mẫu Đăng Ký - AEV</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 0;
+        }
+
+        /* Header compact - chỉ 70px cao */
+        .header {
+            background: linear-gradient(135deg, #4A90E2 0%, #50C878 100%);
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .header-title {
+            color: white;
+        }
+
+        .header-title h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 2px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-title p {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        .header-right {
+            color: white;
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        /* Container chính - chiếm full màn hình */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        /* PC: Layout 2 cột */
+        @media (min-width: 1200px) {
+            .main-container {
+                grid-template-columns: 350px 1fr;
+                padding: 30px;
+            }
+        }
+
+        /* Sidebar bên trái (chỉ hiện trên PC) */
+        .sidebar {
+            display: none;
+        }
+
+        @media (min-width: 1200px) {
+            .sidebar {
+                display: block;
+                background: white;
+                border-radius: 12px;
+                padding: 30px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+                height: fit-content;
+                position: sticky;
+                top: 100px;
+            }
+
+            .sidebar-logo {
+                text-align: center;
+                margin-bottom: 30px;
+            }
+
+            .sidebar-logo img {
+                width: 120px;
+                height: 120px;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 4px solid #f0f0f0;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            }
+
+            .sidebar-info {
+                margin-top: 20px;
+            }
+
+            .info-item {
+                padding: 15px;
+                margin-bottom: 12px;
+                background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+                border-radius: 8px;
+                border-left: 4px solid #4A90E2;
+            }
+
+            .info-item h3 {
+                font-size: 14px;
+                color: #4A90E2;
+                margin-bottom: 5px;
+                font-weight: 600;
+            }
+
+            .info-item p {
+                font-size: 13px;
+                color: #666;
+                line-height: 1.6;
+            }
+
+            .support-box {
+                margin-top: 30px;
+                padding: 20px;
+                background: linear-gradient(135deg, #4A90E2 0%, #50C878 100%);
+                border-radius: 10px;
+                color: white;
+                text-align: center;
+            }
+
+            .support-box h3 {
+                font-size: 16px;
+                margin-bottom: 10px;
+            }
+
+            .support-box p {
+                font-size: 13px;
+                opacity: 0.95;
+                margin-bottom: 15px;
+            }
+
+            .support-box a {
+                display: inline-block;
+                padding: 10px 20px;
+                background: white;
+                color: #4A90E2;
+                border-radius: 6px;
+                text-decoration: none;
+                font-weight: 600;
+                transition: transform 0.2s;
+            }
+
+            .support-box a:hover {
+                transform: translateY(-2px);
+            }
+        }
+
+        /* Form container */
+        .form-container {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-header {
+            background: linear-gradient(135deg, #4A90E2 0%, #50C878 100%);
+            padding: 25px 30px;
+            color: white;
+            text-align: center;
+        }
+
+        .form-header h2 {
+            font-size: 28px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .form-header p {
+            font-size: 15px;
+            opacity: 0.95;
+        }
+
+        .form-wrapper {
+            position: relative;
+            background: #f8f9fa;
+        }
+
+        iframe {
+            width: 100%;
+            border: none;
+            display: block;
+            min-height: 700px;
+        }
+
+        /* Loading */
+        .loading {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px;
+            background: white;
+            z-index: 10;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #4A90E2;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: #666;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        /* Footer compact */
+        .footer {
+            background: rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            text-align: center;
+            color: white;
+            margin-top: 20px;
+        }
+
+        .footer p {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        /* Responsive Mobile */
+        @media (max-width: 768px) {
+            .header {
+                padding: 12px 15px;
+            }
+
+            .header-left {
+                gap: 12px;
+            }
+
+            .logo {
+                width: 40px;
+                height: 40px;
+            }
+
+            .header-title h1 {
+                font-size: 18px;
+            }
+
+            .header-title p {
+                font-size: 12px;
+            }
+
+            .header-right {
+                display: none;
+            }
+
+            .main-container {
+                padding: 10px;
+            }
+
+            .form-header h2 {
+                font-size: 22px;
+            }
+
+            .form-header p {
+                font-size: 14px;
+            }
+
+            iframe {
+                min-height: 800px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            iframe {
+                min-height: 1000px;
+            }
+        }
+
+        /* Popup Zalo */
+        .zalo-popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 9999;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .zalo-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease;
+            z-index: 10000;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -40%);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+        }
+
+        .zalo-popup-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .zalo-popup-header h3 {
+            color: #0068FF;
+            font-size: 24px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .zalo-popup-header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .zalo-info {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 2px solid #0068FF;
+        }
+
+        .phone-number {
+            font-size: 28px;
+            font-weight: 700;
+            color: #0068FF;
+            text-align: center;
+            letter-spacing: 2px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .copy-btn {
+            background: linear-gradient(135deg, #0068FF 0%, #0052CC 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .copy-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 104, 255, 0.3);
+        }
+
+        .copy-btn:active {
+            transform: translateY(0);
+        }
+
+        .qr-code {
+            text-align: center;
+            margin: 25px 0;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            border: 2px dashed #0068FF;
+        }
+
+        .qr-code img {
+            width: 200px;
+            height: 200px;
+            border-radius: 8px;
+        }
+
+        .qr-code p {
+            margin-top: 15px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .instruction {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .instruction h4 {
+            color: #856404;
+            font-size: 15px;
+            margin-bottom: 10px;
+        }
+
+        .instruction ol {
+            margin: 0;
+            padding-left: 20px;
+            color: #856404;
+            font-size: 14px;
+        }
+
+        .instruction li {
+            margin: 5px 0;
+        }
+
+        .close-popup {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s;
+        }
+
+        .close-popup:hover {
+            background: #5a6268;
+        }
+
+        .copied-notification {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #28a745;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            z-index: 10001;
+            animation: slideInRight 0.3s ease;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .zalo-popup {
+                padding: 25px;
+                width: 95%;
+            }
+
+            .phone-number {
+                font-size: 24px;
+            }
+
+            .qr-code img {
+                width: 180px;
+                height: 180px;
+            }
+        }
+    </style>
+</head>
+<!--Start of Tawk.to Script-->
+<script type="text/javascript">
+var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+(function(){
+var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+s1.async=true;
+s1.src='https://embed.tawk.to/692d6809e038f8197ec10f4b/1jbclsq4h';
+s1.charset='UTF-8';
+s1.setAttribute('crossorigin','*');
+s0.parentNode.insertBefore(s1,s0);
+})();
+</script>
+<!--End of Tawk.to Script-->
+    
+<body>
+    <!-- Header compact -->
+    <div class="header">
+        <div class="header-left">
+            <img src="img/logo.jpg" alt="AEV Logo" class="logo" onerror="this.style.display='none'">
+            <div class="header-title">
+                <h1>📝 Biểu Mẫu Đăng Ký</h1>
+                <p>Hệ thống đăng ký trực tuyến</p>
+            </div>
+        </div>
+        <div class="header-right">
+            AEV Education System
+        </div>
+    </div>
+
+    <!-- Main container -->
+    <div class="main-container">
+        <!-- Sidebar (chỉ hiện trên PC) -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <img src="img/logo.jpg" alt="AEV Logo" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22120%22 height=%22120%22%3E%3Crect fill=%22%234A90E2%22 width=%22120%22 height=%22120%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-size=%2248%22 fill=%22white%22 text-anchor=%22middle%22 dy=%22.3em%22%3EAEV%3C/text%3E%3C/svg%3E'">
+            </div>
+
+            <div class="sidebar-info">
+                <div class="info-item">
+                    <h3>📋 Hướng dẫn</h3>
+                    <p>Vui lòng điền đầy đủ thông tin vào biểu mẫu bên cạnh. Mọi thông tin sẽ được bảo mật.</p>
+                </div>
+
+                <div class="info-item">
+                    <h3>⏱️ Thời gian</h3>
+                    <p>Hoàn thành biểu mẫu chỉ mất khoảng 3-5 phút.</p>
+                </div>
+
+                <div class="info-item">
+                    <h3>✉️ Xác nhận</h3>
+                    <p>Bạn sẽ nhận email xác nhận ngay sau khi gửi form thành công.</p>
+                </div>
+            </div>
+
+            <div class="support-box">
+                <h3>💬 Cần hỗ trợ?</h3>
+                <p>Liên hệ với chúng tôi qua Zalo nếu gặp vấn đề</p>
+                <a href="javascript:void(0)" onclick="showZaloPopup()">
+                    <span style="margin-right: 5px;">📱</span>
+                    Chat Zalo ngay
+                </a>
+            </div>
+        </aside>
+
+        <!-- Form chính -->
+        <div class="form-container">
+            <div class="form-header">
+                <h2>Thông Tin Đăng Ký</h2>
+                <p>Vui lòng điền đầy đủ thông tin bên dưới</p>
+            </div>
+
+            <div class="form-wrapper">
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <div class="loading-text">Đang tải biểu mẫu...</div>
+                </div>
+                <iframe 
+                    src="https://docs.google.com/forms/d/e/1FAIpQLScIHCYDIh8Cq6bKyYjMM5mui8-GUnSXaVV2RuuKtCGedah-cg/viewform?embedded=true"
+                    id="formFrame"
+                    onload="adjustIframeHeight()"
+                    style="display: none;">
+                    Đang tải…
+                </iframe>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer compact -->
+    <div class="footer">
+        <p>© 2025 AEV Education System - Được hỗ trợ bởi Google Forms</p>
+    </div>
+
+    <!-- Popup Zalo -->
+    <div class="zalo-popup-overlay" id="zaloPopup" onclick="closeZaloPopup()">
+        <div class="zalo-popup" onclick="event.stopPropagation()">
+            <div class="zalo-popup-header">
+                <h3>
+                    <span style="font-size: 32px;">📱</span>
+                    Liên hệ Zalo
+                </h3>
+                <p>Chúng tôi sẵn sàng hỗ trợ bạn</p>
+            </div>
+
+            <div class="instruction">
+                <h4>💡 Hướng dẫn liên hệ:</h4>
+                <ol>
+                    <li><strong>Điện thoại:</strong> Quét mã QR bằng Zalo</li>
+                    <li><strong>Máy tính:</strong> Copy số và tìm trên Zalo PC</li>
+                    <li>Hoặc click "Copy số" rồi dán vào Zalo</li>
+                </ol>
+            </div>
+
+            <div class="zalo-info">
+                <p style="text-align: center; color: #666; font-size: 14px; margin-bottom: 5px;">Số điện thoại Zalo</p>
+                <div class="phone-number">0394304799</div>
+                <button class="copy-btn" onclick="copyPhoneNumber()">
+                    📋 Copy số điện thoại
+                </button>
+            </div>
+
+            <div class="qr-code">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://zalo.me/0394304799" alt="QR Code Zalo">
+                <p><strong>📲 Quét mã QR</strong><br><span style="font-size: 13px;">Mở Zalo → Quét QR → Chat ngay</span></p>
+            </div>
+
+            <button class="close-popup" onclick="closeZaloPopup()">Đóng</button>
+        </div>
+    </div>
+
+    <!-- Thông báo đã copy -->
+    <div class="copied-notification" id="copiedNotif">
+        ✅ Đã copy số điện thoại!
+    </div>
+
+    <script>
+        // Hiển thị popup Zalo
+        function showZaloPopup() {
+            document.getElementById('zaloPopup').style.display = 'block';
+        }
+
+        // Đóng popup Zalo
+        function closeZaloPopup() {
+            document.getElementById('zaloPopup').style.display = 'none';
+        }
+
+        // Copy số điện thoại
+        function copyPhoneNumber() {
+            const phoneNumber = '0394304799';
+            
+            // Copy vào clipboard
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(phoneNumber).then(function() {
+                    showCopiedNotification();
+                }).catch(function(err) {
+                    // Fallback nếu lỗi
+                    fallbackCopy(phoneNumber);
+                });
+            } else {
+                // Fallback cho trình duyệt cũ
+                fallbackCopy(phoneNumber);
+            }
+        }
+
+        // Phương thức copy dự phòng
+        function fallbackCopy(text) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.select();
+            
+            try {
+                document.execCommand('copy');
+                showCopiedNotification();
+            } catch (err) {
+                alert('Không thể copy tự động. Vui lòng copy số: ' + text);
+            }
+            
+            document.body.removeChild(textArea);
+        }
+
+        // Hiển thị thông báo đã copy
+        function showCopiedNotification() {
+            const notif = document.getElementById('copiedNotif');
+            notif.style.display = 'block';
+            
+            setTimeout(function() {
+                notif.style.display = 'none';
+            }, 3000);
+        }
+
+        // Đóng popup khi nhấn ESC
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeZaloPopup();
+            }
+        });
+
+        function adjustIframeHeight() {
+            const iframe = document.getElementById('formFrame');
+            const loading = document.getElementById('loading');
+            
+            loading.style.display = 'none';
+            iframe.style.display = 'block';
+            
+            // Tự động điều chỉnh chiều cao
+            let height = 700;
+            
+            if (window.innerWidth < 480) {
+                height = 1000;
+            } else if (window.innerWidth < 768) {
+                height = 800;
+            } else if (window.innerWidth >= 1200) {
+                height = 900; // PC có sidebar nên form cao hơn
+            }
+            
+            iframe.style.height = height + 'px';
+            
+            window.addEventListener('resize', function() {
+                if (window.innerWidth < 480) {
+                    iframe.style.height = '1000px';
+                } else if (window.innerWidth < 768) {
+                    iframe.style.height = '800px';
+                } else if (window.innerWidth >= 1200) {
+                    iframe.style.height = '900px';
+                } else {
+                    iframe.style.height = '700px';
+                }
+            });
+        }
+
+        window.addEventListener('load', function() {
+            document.body.style.opacity = '0';
+            setTimeout(() => {
+                document.body.style.transition = 'opacity 0.5s';
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+    </script>
+</body>
+</html>
