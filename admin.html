@@ -452,8 +452,13 @@
                 </div>
 
                 <button class="btn btn-primary" onclick="saveFormLink()">💾 Lưu Link Form</button>
+                <button class="btn btn-secondary" onclick="deleteFormLink()" style="margin-top: 10px;">
+    🗑️ Xóa Link Form
+</button>
             </div>
-
+<button class="btn btn-secondary" onclick="deleteFormLink()" style="margin-top: 10px;">
+    🗑️ Xóa Link Form
+</button>
             <!-- Card 2: Logo Management -->
             <div class="card">
                 <div class="card-header">
@@ -953,6 +958,18 @@ async function saveZaloNumber() {
         showSuccess('✅ Đã lưu số Zalo thành công!');
     } catch (error) {
         showError('❌ Lỗi khi lưu: ' + error.message);
+    }
+}
+async function deleteFormLink() {
+    if (confirm('⚠️ Bạn có chắc muốn xóa link form?')) {
+        try {
+            await window.storage.delete('aev_form_link');
+            document.getElementById('currentLinkText').textContent = 'Chưa có dữ liệu';
+            document.getElementById('formLink').value = '';
+            showSuccess('✅ Đã xóa link form thành công!');
+        } catch (error) {
+            showError('❌ Lỗi khi xóa: ' + error.message);
+        }
     }
 }
     </script>
