@@ -671,7 +671,8 @@ s0.parentNode.insertBefore(s1,s0);
 
     <script>
         // DEFAULT VALUES - Sẽ được override nếu có dữ liệu từ admin
-        const DEFAULT_FORM_LINK = 'https://docs.google.com/forms/d/e/1FAIpQLScIHCYDIh8Cq6bKyYjMM5mui8-GUnSXaVV2RuuKtCGedah-cg/viewform?embedded=true';
+        const DEFAULT_FORM_LINK = ''; // Để trống, không dùng form mặc định
+        // const DEFAULT_FORM_LINK = 'https://docs.google.com/forms/d/e/1FAIpQLScIHCYDIh8Cq6bKyYjMM5mui8-GUnSXaVV2RuuKtCGedah-cg/viewform?embedded=true';
         const DEFAULT_LOGO_PATH = 'img/logo.jpg';
 
         // Mock storage cho môi trường local (giống admin.html) - dùng localStorage để share data
@@ -740,14 +741,43 @@ async function loadAdminData() {
         console.log('🔍 Đang kiểm tra dữ liệu từ Admin...');
         
         // 1. Load Form Link từ admin
-        const formLinkData = await window.storage.get('aev_form_link');
-        if (formLinkData && formLinkData.value) {
-            console.log('✅ Đã load Form Link từ Admin:', formLinkData.value);
-            document.getElementById('formFrame').src = formLinkData.value;
-        } else {
-            console.log('ℹ️ Sử dụng Form Link mặc định');
-            document.getElementById('formFrame').src = DEFAULT_FORM_LINK;
-        }
+        // const formLinkData = await window.storage.get('aev_form_link');
+        // if (formLinkData && formLinkData.value) {
+        //     console.log('✅ Đã load Form Link từ Admin:', formLinkData.value);
+        //     document.getElementById('formFrame').src = formLinkData.value;
+        // } else {
+        //     console.log('ℹ️ Sử dụng Form Link mặc định');
+        //     document.getElementById('formFrame').src = DEFAULT_FORM_LINK;
+        // }
+        // Load Form Link từ admin
+const formLinkData = await window.storage.get('aev_form_link');
+if (formLinkData && formLinkData.value) {
+    console.log('✅ Đã load Form Link từ Admin:', formLinkData.value);
+    document.getElementById('formFrame').src = formLinkData.value;
+} else {
+    console.log('⚠️ Chưa có Form Link! Vui lòng vào Admin Panel để cập nhật.');
+    // Hiển thị thông báo thay vì form
+    document.getElementById('loading').innerHTML = `
+        <div style="text-align: center; padding: 60px 20px;">
+            <div style="font-size: 48px; margin-bottom: 20px;">⚠️</div>
+            <h3 style="color: #dc3545; margin-bottom: 15px;">Chưa có biểu mẫu</h3>
+            <p style="color: #666; margin-bottom: 20px;">
+                Vui lòng vào Admin Panel để cập nhật link Google Form.
+            </p>
+            <a href="admin.html" style="
+                display: inline-block;
+                padding: 12px 30px;
+                background: linear-gradient(135deg, #4A90E2 0%, #50C878 100%);
+                color: white;
+                border-radius: 8px;
+                text-decoration: none;
+                font-weight: 600;
+            ">
+                🔐 Vào Admin Panel
+            </a>
+        </div>
+    `;
+}
 
         // 2. Load Logo từ admin
         const logoData = await window.storage.get('aev_logo_base64');
