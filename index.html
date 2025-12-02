@@ -550,9 +550,9 @@ s0.parentNode.insertBefore(s1,s0);
     <!-- Header compact -->
     <div class="header">
         <div class="header-left">
-            <img src="img/logo.jpg" alt="AEV Logo" class="logo" onerror="this.style.display='none'">
+<img id="headerLogo" src="" alt="AEV Logo" class="logo" style="display:none;">
             <div class="header-title">
-                <h1>📝 Biểu Mẫu Đăng Ký</h1>
+                <h1>📋 Biểu Mẫu Đăng Ký</h1>
                 <p>Hệ thống đăng ký trực tuyến</p>
             </div>
         </div>
@@ -566,29 +566,30 @@ s0.parentNode.insertBefore(s1,s0);
         <!-- Sidebar (chỉ hiện trên PC) -->
         <aside class="sidebar">
             <div class="sidebar-logo">
-                <img src="img/logo.jpg" alt="AEV Logo" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22120%22 height=%22120%22%3E%3Crect fill=%22%234A90E2%22 width=%22120%22 height=%22120%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-size=%2248%22 fill=%22white%22 text-anchor=%22middle%22 dy=%22.3em%22%3EAEV%3C/text%3E%3C/svg%3E'">
+                <!-- <img id="sidebarLogo" src="img/logo.jpg" alt="AEV Logo" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22120%22 height=%22120%22%3E%3Crect fill=%22%234A90E2%22 width=%22120%22 height=%22120%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-size=%2248%22 fill=%22white%22 text-anchor=%22middle%22 dy=%22.3em%22%3EAEV%3C/text%3E%3C/svg%3E'"> -->
+            <img id="sidebarLogo" src="" alt="AEV Logo" style="display:none;">
             </div>
 
             <div class="sidebar-info">
                 <div class="info-item">
-                    <h3>📋 Hướng dẫn</h3>
-                    <p>Vui lòng điền đầy đủ thông tin vào biểu mẫu bên cạnh. Mọi thông tin sẽ được bảo mật.</p>
+                    <h3 id="sidebarGuideTitle">📋 Hướng dẫn</h3>
+                    <p id="sidebarGuideContent">Vui lòng điền đầy đủ thông tin vào biểu mẫu bên cạnh. Mọi thông tin sẽ được bảo mật.</p>
                 </div>
 
                 <div class="info-item">
-                    <h3>⏱️ Thời gian</h3>
-                    <p>Hoàn thành biểu mẫu chỉ mất khoảng 3-5 phút.</p>
+                    <h3 id="sidebarTimeTitle">⏱️ Thời gian</h3>
+                    <p id="sidebarTimeContent">Hoàn thành biểu mẫu chỉ mất khoảng 3-5 phút.</p>
                 </div>
 
                 <div class="info-item">
-                    <h3>✉️ Xác nhận</h3>
-                    <p>Bạn sẽ nhận email xác nhận ngay sau khi gửi form thành công.</p>
+                    <h3 id="sidebarConfirmTitle">✉️ Xác nhận</h3>
+                    <p id="sidebarConfirmContent">Bạn sẽ nhận email xác nhận ngay sau khi gửi form thành công.</p>
                 </div>
             </div>
 
             <div class="support-box">
-                <h3>💬 Cần hỗ trợ?</h3>
-                <p>Liên hệ với chúng tôi qua Zalo nếu gặp vấn đề</p>
+                <h3 id="sidebarSupportTitle">💬 Cần hỗ trợ?</h3>
+                <p id="sidebarSupportContent">Liên hệ với chúng tôi qua Zalo nếu gặp vấn đề</p>
                 <a href="javascript:void(0)" onclick="showZaloPopup()">
                     <span style="margin-right: 5px;">📱</span>
                     Chat Zalo ngay
@@ -609,8 +610,8 @@ s0.parentNode.insertBefore(s1,s0);
                     <div class="loading-text">Đang tải biểu mẫu...</div>
                 </div>
                 <iframe 
-                    src="https://docs.google.com/forms/d/e/1FAIpQLScIHCYDIh8Cq6bKyYjMM5mui8-GUnSXaVV2RuuKtCGedah-cg/viewform?embedded=true"
                     id="formFrame"
+                    src="https://docs.google.com/forms/d/e/1FAIpQLScIHCYDIh8Cq6bKyYjMM5mui8-GUnSXaVV2RuuKtCGedah-cg/viewform?embedded=true"
                     onload="adjustIframeHeight()"
                     style="display: none;">
                     Đang tải…
@@ -667,6 +668,156 @@ s0.parentNode.insertBefore(s1,s0);
     </div>
 
     <script>
+        // DEFAULT VALUES - Sẽ được override nếu có dữ liệu từ admin
+        const DEFAULT_FORM_LINK = 'https://docs.google.com/forms/d/e/1FAIpQLScIHCYDIh8Cq6bKyYjMM5mui8-GUnSXaVV2RuuKtCGedah-cg/viewform?embedded=true';
+        const DEFAULT_LOGO_PATH = 'img/logo.jpg';
+
+        // Mock storage cho môi trường local (giống admin.html) - dùng localStorage để share data
+        if (typeof window.storage === 'undefined') {
+            console.log('⚠️ Sử dụng localStorage để lưu trữ');
+            window.storage = {
+                get: function(key) {
+                    try {
+                        const value = localStorage.getItem(key);
+                        return Promise.resolve(value ? { key: key, value: value } : null);
+                    } catch (e) {
+                        return Promise.resolve(null);
+                    }
+                },
+                set: function(key, value) {
+                    try {
+                        localStorage.setItem(key, value);
+                        console.log('💾 Đã lưu vào localStorage:', key);
+                        return Promise.resolve({ key: key, value: value });
+                    } catch (e) {
+                        console.error('❌ Lỗi lưu localStorage:', e);
+                        return Promise.resolve(null);
+                    }
+                },
+                delete: function(key) {
+                    try {
+                        localStorage.removeItem(key);
+                        return Promise.resolve({ key: key, deleted: true });
+                    } catch (e) {
+                        return Promise.resolve(null);
+                    }
+                },
+                list: function(prefix) {
+                    try {
+                        const keys = [];
+                        for (let i = 0; i < localStorage.length; i++) {
+                            const key = localStorage.key(i);
+                            if (!prefix || key.startsWith(prefix)) {
+                                keys.push(key);
+                            }
+                        }
+                        return Promise.resolve({ keys: keys });
+                    } catch (e) {
+                        return Promise.resolve({ keys: [] });
+                    }
+                }
+            };
+        }
+
+        // Load dữ liệu từ admin panel khi trang được tải
+        window.addEventListener('load', async function() {
+            await loadAdminData();
+            
+            // Fade in effect
+            document.body.style.opacity = '0';
+            setTimeout(() => {
+                document.body.style.transition = 'opacity 0.5s';
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+
+        // Hàm load dữ liệu từ storage
+// Hàm load dữ liệu từ storage
+async function loadAdminData() {
+    try {
+        console.log('🔍 Đang kiểm tra dữ liệu từ Admin...');
+        
+        // 1. Load Form Link từ admin
+        const formLinkData = await window.storage.get('aev_form_link');
+        if (formLinkData && formLinkData.value) {
+            console.log('✅ Đã load Form Link từ Admin:', formLinkData.value);
+            document.getElementById('formFrame').src = formLinkData.value;
+        } else {
+            console.log('ℹ️ Sử dụng Form Link mặc định');
+            document.getElementById('formFrame').src = DEFAULT_FORM_LINK;
+        }
+
+        // 2. Load Logo từ admin
+        const logoData = await window.storage.get('aev_logo_base64');
+        if (logoData && logoData.value) {
+            console.log('✅ Đã load Logo từ Admin');
+            
+            const headerLogo = document.getElementById('headerLogo');
+            const sidebarLogo = document.getElementById('sidebarLogo');
+            
+            // Cập nhật src với ảnh base64
+            headerLogo.src = logoData.value;
+            sidebarLogo.src = logoData.value;
+            
+            // Xóa onerror để tránh fallback
+            headerLogo.onerror = null;
+            sidebarLogo.onerror = null;
+            
+            // Hiển thị logo
+            headerLogo.style.display = 'block';
+            sidebarLogo.style.display = 'block';
+        } else {
+            console.log('ℹ️ Chưa có logo trong storage');
+        }
+
+        // 3. Load Sidebar Content từ admin
+        const sidebarData = await window.storage.get('aev_sidebar_content');
+        if (sidebarData && sidebarData.value) {
+            console.log('✅ Đã load Sidebar Content từ Admin');
+            const content = JSON.parse(sidebarData.value);
+            
+            document.getElementById('sidebarGuideTitle').textContent = content.guideTitle || '📋 Hướng dẫn';
+            document.getElementById('sidebarGuideContent').textContent = content.guideContent || 'Vui lòng điền đầy đủ thông tin vào biểu mẫu bên cạnh. Mọi thông tin sẽ được bảo mật.';
+            
+            document.getElementById('sidebarTimeTitle').textContent = content.timeTitle || '⏱️ Thời gian';
+            document.getElementById('sidebarTimeContent').textContent = content.timeContent || 'Hoàn thành biểu mẫu chỉ mất khoảng 3-5 phút.';
+            
+            document.getElementById('sidebarConfirmTitle').textContent = content.confirmTitle || '✉️ Xác nhận';
+            document.getElementById('sidebarConfirmContent').textContent = content.confirmContent || 'Bạn sẽ nhận email xác nhận ngay sau khi gửi form thành công.';
+            
+            document.getElementById('sidebarSupportTitle').textContent = content.supportTitle || '💬 Cần hỗ trợ?';
+            document.getElementById('sidebarSupportContent').textContent = content.supportContent || 'Liên hệ với chúng tôi qua Zalo nếu gặp vấn đề';
+        } else {
+            console.log('ℹ️ Sử dụng Sidebar Content mặc định');
+        }
+
+        // 4. Load Số Zalo từ admin
+        const zaloData = await window.storage.get('aev_zalo_number');
+        if (zaloData && zaloData.value) {
+            console.log('✅ Đã load Số Zalo từ Admin:', zaloData.value);
+            
+            // Cập nhật số Zalo ở popup
+            const phoneNumberElements = document.querySelectorAll('.phone-number');
+            phoneNumberElements.forEach(el => {
+                el.textContent = zaloData.value;
+            });
+            
+            // Cập nhật QR code
+            const qrImages = document.querySelectorAll('.qr-code img');
+            qrImages.forEach(img => {
+                img.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://zalo.me/${zaloData.value}`;
+            });
+        } else {
+            console.log('ℹ️ Sử dụng Số Zalo mặc định');
+        }
+        
+    } catch (error) {
+        console.log('⚠️ Chưa có dữ liệu từ Admin hoặc lỗi khi load:', error);
+        // Sử dụng giá trị mặc định
+        document.getElementById('formFrame').src = DEFAULT_FORM_LINK;
+    }
+}
+
         // Hiển thị popup Zalo
         function showZaloPopup() {
             document.getElementById('zaloPopup').style.display = 'block';
@@ -678,22 +829,25 @@ s0.parentNode.insertBefore(s1,s0);
         }
 
         // Copy số điện thoại
-        function copyPhoneNumber() {
-            const phoneNumber = '0394304799';
-            
-            // Copy vào clipboard
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(phoneNumber).then(function() {
-                    showCopiedNotification();
-                }).catch(function(err) {
-                    // Fallback nếu lỗi
-                    fallbackCopy(phoneNumber);
-                });
-            } else {
-                // Fallback cho trình duyệt cũ
-                fallbackCopy(phoneNumber);
-            }
-        }
+       // Copy số điện thoại
+async function copyPhoneNumber() {
+    // Load số từ storage
+    const zaloData = await window.storage.get('aev_zalo_number');
+    const phoneNumber = zaloData && zaloData.value ? zaloData.value : '0394304799';
+    
+    // Copy vào clipboard
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(phoneNumber).then(function() {
+            showCopiedNotification();
+        }).catch(function(err) {
+            // Fallback nếu lỗi
+            fallbackCopy(phoneNumber);
+        });
+    } else {
+        // Fallback cho trình duyệt cũ
+        fallbackCopy(phoneNumber);
+    }
+}
 
         // Phương thức copy dự phòng
         function fallbackCopy(text) {
@@ -763,14 +917,7 @@ s0.parentNode.insertBefore(s1,s0);
                 }
             });
         }
-
-        window.addEventListener('load', function() {
-            document.body.style.opacity = '0';
-            setTimeout(() => {
-                document.body.style.transition = 'opacity 0.5s';
-                document.body.style.opacity = '1';
-            }, 100);
-        });
+        
     </script>
 </body>
 </html>
