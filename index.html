@@ -764,27 +764,25 @@ s0.parentNode.insertBefore(s1,s0);
 
         // Hàm load dữ liệu từ storage
 // Hàm load dữ liệu từ storage HOẶC config.js
+// Hàm load dữ liệu từ storage
 async function loadAdminData() {
     try {
-        console.log('🔍 Đang load cấu hình...');
+        console.log('🔍 Đang kiểm tra dữ liệu...');
         
         // 1. LOAD FORM LINK
-        // Ưu tiên: Storage > Config.js
         const formLinkData = await window.storage.get('aev_form_link');
-        const formLink = formLinkData?.value || CONFIG.formLink;
         
-        if (formLink) {
-            console.log('✅ Đã load Form Link:', formLink);
-            document.getElementById('formFrame').src = formLink;
+        if (formLinkData && formLinkData.value) {
+            console.log('✅ Đã có Form Link');
+            document.getElementById('formFrame').src = formLinkData.value;
         } else {
-            console.log('⚠️ Chưa có Form Link!');
+            console.log('⚠️ Chưa có Form Link');
             document.getElementById('loading').innerHTML = `
                 <div style="text-align: center; padding: 60px 20px;">
                     <div style="font-size: 48px; margin-bottom: 20px;">⚠️</div>
                     <h3 style="color: #dc3545; margin-bottom: 15px;">Chưa có biểu mẫu</h3>
                     <p style="color: #666; margin-bottom: 20px;">
-                        Vui lòng cập nhật link trong file <code>config.js</code><br>
-                        hoặc vào Admin Panel để cập nhật.
+                        Vui lòng vào Admin Panel để cập nhật link Google Form.
                     </p>
                     <a href="admin.html" style="
                         display: inline-block;
@@ -799,70 +797,54 @@ async function loadAdminData() {
                     </a>
                 </div>
             `;
+            return; // Dừng ở đây nếu chưa có form
         }
 
         // 2. LOAD LOGO
         const logoData = await window.storage.get('aev_logo_base64');
-        const logoSrc = logoData?.value || CONFIG.logoPath;
-        
-        if (logoSrc) {
-            console.log('✅ Đã load Logo');
+        if (logoData && logoData.value) {
+            console.log('✅ Đã có Logo');
             const headerLogo = document.getElementById('headerLogo');
             const sidebarLogo = document.getElementById('sidebarLogo');
             
-            headerLogo.src = logoSrc;
-            sidebarLogo.src = logoSrc;
+            headerLogo.src = logoData.value;
+            sidebarLogo.src = logoData.value;
             headerLogo.style.display = 'block';
             sidebarLogo.style.display = 'block';
-            headerLogo.onerror = null;
-            sidebarLogo.onerror = null;
         } else {
             console.log('ℹ️ Chưa có logo');
         }
 
-        // 3. LOAD SIDEBAR CONTENT
+        // 3. LOAD SIDEBAR
         const sidebarData = await window.storage.get('aev_sidebar_content');
-        let sidebar;
-        
-        if (sidebarData?.value) {
-            console.log('✅ Load Sidebar từ Storage');
-            sidebar = JSON.parse(sidebarData.value);
-        } else {
-            console.log('✅ Load Sidebar từ Config.js');
-            sidebar = CONFIG.sidebar;
+        if (sidebarData && sidebarData.value) {
+            console.log('✅ Đã có Sidebar Content');
+            const content = JSON.parse(sidebarData.value);
+            
+            document.getElementById('sidebarGuideTitle').textContent = content.guideTitle || '📋 Hướng dẫn';
+            document.getElementById('sidebarGuideContent').textContent = content.guideContent || '';
+            document.getElementById('sidebarTimeTitle').textContent = content.timeTitle || '⏱️ Thời gian';
+            document.getElementById('sidebarTimeContent').textContent = content.timeContent || '';
+            document.getElementById('sidebarConfirmTitle').textContent = content.confirmTitle || '✉️ Xác nhận';
+            document.getElementById('sidebarConfirmContent').textContent = content.confirmContent || '';
+            document.getElementById('sidebarSupportTitle').textContent = content.supportTitle || '💬 Cần hỗ trợ?';
+            document.getElementById('sidebarSupportContent').textContent = content.supportContent || '';
         }
-        
-        // Cập nhật các phần tử sidebar
-        document.getElementById('sidebarGuideTitle').textContent = sidebar.guideTitle || '📋 Hướng dẫn';
-        document.getElementById('sidebarGuideContent').textContent = sidebar.guideContent || '';
-        document.getElementById('sidebarTimeTitle').textContent = sidebar.timeTitle || '⏱️ Thời gian';
-        document.getElementById('sidebarTimeContent').textContent = sidebar.timeContent || '';
-        document.getElementById('sidebarConfirmTitle').textContent = sidebar.confirmTitle || '✉️ Xác nhận';
-        document.getElementById('sidebarConfirmContent').textContent = sidebar.confirmContent || '';
-        document.getElementById('sidebarSupportTitle').textContent = sidebar.supportTitle || '💬 Cần hỗ trợ?';
-        document.getElementById('sidebarSupportContent').textContent = sidebar.supportContent || '';
 
         // 4. LOAD SỐ ZALO
         const zaloData = await window.storage.get('aev_zalo_number');
-        const zaloNumber = zaloData?.value || CONFIG.zaloNumber;
-        
-        console.log('✅ Đã load Số Zalo:', zaloNumber);
-        
-        // Cập nhật số Zalo trong popup
-        document.querySelectorAll('.phone-number').forEach(el => {
-            el.textContent = zaloNumber;
-        });
-        
-        // Cập nhật QR code
-        document.querySelectorAll('.qr-code img').forEach(img => {
-            img.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://zalo.me/${zaloNumber}`;
-        });
-        
-        console.log('✅ Hoàn tất load cấu hình!');
+        if (zaloData && zaloData.value) {
+            console.log('✅ Đã có Số Zalo');
+            document.querySelectorAll('.phone-number').forEach(el => {
+                el.textContent = zaloData.value;
+            });
+            document.querySelectorAll('.qr-code img').forEach(img => {
+                img.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://zalo.me/${zaloData.value}`;
+            });
+        }
         
     } catch (error) {
-        console.error('❌ Lỗi khi load:', error);
-        alert('Lỗi: ' + error.message);
+        console.log('❌ Lỗi:', error);
     }
 }
 

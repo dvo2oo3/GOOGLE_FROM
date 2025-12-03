@@ -573,20 +573,36 @@
     <button class="btn btn-primary" onclick="saveZaloNumber()">💾 Lưu Số Zalo</button>
 </div>
             <!-- Card 3: Export Code -->
-            <div class="card">
-                <div class="card-header">
-                    <span class="icon">📥</span>
-                    <h2>Export Code</h2>
-                </div>
-
-                <div class="info-box">
-                    <p><strong>💡 Hướng dẫn:</strong> Sau khi cập nhật xong, click nút bên dưới để tải về file HTML đã được cập nhật với link form và logo mới.</p>
-                </div>
-
-                <button class="btn btn-secondary" onclick="exportUpdatedHTML()">📥 Tải về HTML đã cập nhật</button>
-            </div>
-        </div>
+<!-- Card 3: Export/Import Config -->
+<div class="card">
+    <div class="card-header">
+        <span class="icon">💾</span>
+        <h2>Xuất/Nhập Cấu Hình</h2>
     </div>
+
+    <div class="info-box">
+        <p><strong>💡 Hướng dẫn:</strong></p>
+        <p style="margin-top: 8px;">
+            <strong>Xuất:</strong> Tải file <code>config.json</code> chứa toàn bộ cấu hình (form link, logo, sidebar, zalo)<br>
+            <strong>Nhập:</strong> Upload file <code>config.json</code> để khôi phục cấu hình trên máy khác
+        </p>
+    </div>
+
+    <button class="btn btn-primary" onclick="exportConfig()">
+        📥 Xuất Config (Tải file)
+    </button>
+
+    <div class="form-group" style="margin-top: 20px;">
+        <label class="file-upload" for="configImport">
+            <span class="icon">📤</span>
+            <div class="file-upload-text">
+                <strong>Nhập Config từ file</strong><br>
+                <span style="font-size: 13px;">Click để chọn file config.json</span>
+            </div>
+            <input type="file" id="configImport" accept=".json">
+        </label>
+    </div>
+</div>
 
     <script>
         let currentLogoBase64 = '';
@@ -972,6 +988,103 @@ async function deleteFormLink() {
         }
     }
 }
+// ==================== EXPORT/IMPORT CONFIG ====================
+
+// Xuất toàn bộ config ra file JSON
+async function exportConfig() {
+    try {
+        // Thu thập tất cả dữ liệu từ storage
+        const formLinkData = await window.storage.get('aev_form_link');
+        const logoData = await window.storage.get('aev_logo_base64');
+        const sidebarData = await window.storage.get('aev_sidebar_content');
+        const zaloData = await window.storage.get('aev_zalo_number');
+        
+        // Tạo object chứa toàn bộ config
+        const config = {
+            formLink: formLinkData?.value || '',
+            logoBase64: logoData?.value || '',
+            sidebar: sidebarData?.value ? JSON.parse(sidebarData.value) : null,
+            zaloNumber: zaloData?.value || '',
+            exportDate: new Date().toLocaleString('vi-VN'),
+            version: '1.0'
+        };
+        
+        // Chuyển sang JSON
+        const jsonString = JSON.stringify(config, null, 2);
+        
+        // Tạo file để tải về
+        const blob = new Blob([jsonString], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        
+        // Tạo link tải xuống
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'config.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        showSuccess('✅ Đã xuất config thành công! File config.json đã được tải về.');
+        
+    } catch (error) {
+        showError('❌ Lỗi khi xuất config: ' + error.message);
+    }
+}
+
+// Xử lý upload file config
+document.getElementById('configImport').addEventListener('change', async function(event) {
+    const file = event.target.files[0];
+    
+    if (!file) return;
+    
+    if (!file.name.endsWith('.json')) {
+        showError('❌ Vui lòng chọn file .json!');
+        return;
+    }
+    
+    try {
+        // Đọc file
+        const text = await file.text();
+        const config = JSON.parse(text);
+        
+        // Xác nhận trước khi import
+        if (!confirm('⚠️ Import config sẽ GHI ĐÈ toàn bộ cấu hình hiện tại!\n\nBạn có chắc chắn muốn tiếp tục?')) {
+            event.target.value = ''; // Reset input
+            return;
+        }
+        
+        // Lưu từng phần vào storage
+        if (config.formLink) {
+            await window.storage.set('aev_form_link', config.formLink);
+        }
+        
+        if (config.logoBase64) {
+            await window.storage.set('aev_logo_base64', config.logoBase64);
+        }
+        
+        if (config.sidebar) {
+            await window.storage.set('aev_sidebar_content', JSON.stringify(config.sidebar));
+        }
+        
+        if (config.zaloNumber) {
+            await window.storage.set('aev_zalo_number', config.zaloNumber);
+        }
+        
+        showSuccess('✅ Đã nhập config thành công! Đang tải lại trang...');
+        
+        // Reload sau 1.5s để load dữ liệu mới
+        setTimeout(() => {
+            location.reload();
+        }, 1500);
+        
+    } catch (error) {
+        showError('❌ Lỗi khi nhập config: ' + error.message);
+    }
+    
+    // Reset input
+    event.target.value = '';
+});
     </script>
 </body>
 </html>
