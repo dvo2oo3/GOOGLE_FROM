@@ -3,381 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
     <title>Admin Panel - AEV</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        /* Login Form */
-        .login-container {
-            background: white;
-            border-radius: 16px;
-            padding: 40px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-            animation: slideUp 0.5s ease;
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .login-header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .login-header h1 {
-            color: #4A90E2;
-            font-size: 28px;
-            margin-bottom: 10px;
-        }
-
-        .login-header p {
-            color: #666;
-            font-size: 14px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            color: #333;
-            font-weight: 600;
-            margin-bottom: 8px;
-            font-size: 14px;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 15px;
-            transition: all 0.3s;
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: #4A90E2;
-            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
-        }
-
-        .btn {
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #4A90E2 0%, #50C878 100%);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(74, 144, 226, 0.4);
-        }
-
-        .btn-secondary {
-            background: #6c757d;
-            color: white;
-            margin-top: 10px;
-        }
-
-        .btn-secondary:hover {
-            background: #5a6268;
-        }
-
-        .error-message {
-            background: #f8d7da;
-            color: #721c24;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            border-left: 4px solid #f5c6cb;
-            display: none;
-        }
-
-        /* Admin Panel */
-        .admin-panel {
-            display: none;
-        }
-
-        .header {
-            background: white;
-            border-radius: 12px;
-            padding: 25px 30px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .header h1 {
-            color: #4A90E2;
-            font-size: 24px;
-        }
-
-        .header .user-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .header .username {
-            color: #666;
-            font-size: 14px;
-        }
-
-        .btn-logout {
-            padding: 8px 20px;
-            background: #dc3545;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-
-        .btn-logout:hover {
-            background: #c82333;
-        }
-
-        .card {
-            background: white;
-            border-radius: 12px;
-            padding: 30px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .card-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #f0f0f0;
-        }
-
-        .card-header h2 {
-            color: #333;
-            font-size: 20px;
-        }
-
-        .icon {
-            font-size: 24px;
-        }
-
-        textarea {
-            width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 14px;
-            font-family: 'Courier New', monospace;
-            min-height: 120px;
-            resize: vertical;
-            transition: all 0.3s;
-        }
-
-        textarea:focus {
-            outline: none;
-            border-color: #4A90E2;
-            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
-        }
-
-        .file-upload {
-            border: 2px dashed #4A90E2;
-            border-radius: 8px;
-            padding: 30px;
-            text-align: center;
-            background: #f8f9fa;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .file-upload:hover {
-            background: #e9ecef;
-            border-color: #357abd;
-        }
-
-        .file-upload input[type="file"] {
-            display: none;
-        }
-
-        .file-upload-text {
-            color: #666;
-            font-size: 14px;
-            margin-top: 10px;
-        }
-
-        .preview-container {
-            margin-top: 20px;
-            text-align: center;
-        }
-
-        .preview-image {
-            max-width: 200px;
-            max-height: 200px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-
-.success-message {
-    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-    color: white;
-    padding: 20px 30px;
-    border-radius: 12px;
-    margin-bottom: 20px;
-    border-left: 6px solid #1e7e34;
-    display: none;
-    font-size: 18px;
-    font-weight: 700;
-    text-align: center;
-    box-shadow: 0 8px 24px rgba(40, 167, 69, 0.5);
-    animation: slideDown 0.4s ease;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-}
-
-@keyframes slideDown {
-    from {
-        opacity: 0;
-        transform: translateY(-30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-        .info-box {
-            background: #e7f3ff;
-            border-left: 4px solid #4A90E2;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-
-        .info-box p {
-            color: #004085;
-            font-size: 14px;
-            line-height: 1.6;
-        }
-
-        .current-value {
-            background: #f8f9fa;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            font-size: 13px;
-            color: #666;
-            word-break: break-all;
-        }
-
-        .default-info {
-            margin-top: 20px;
-            padding: 15px;
-            background: #fff3cd;
-            border-radius: 8px;
-            text-align: center;
-        }
-
-        .default-info p {
-            color: #856404;
-            font-size: 13px;
-            margin-bottom: 8px;
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                padding: 10px;
-            }
-
-            .login-container, .card {
-                padding: 20px;
-            }
-
-            .header {
-                flex-direction: column;
-                gap: 15px;
-                text-align: center;
-            }
-        }
-        /* Toast Notification */
-.toast-notification {
-    position: fixed;
-    top: 100px;
-    right: 30px;
-    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-    color: white;
-    padding: 20px 30px;
-    border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(40, 167, 69, 0.4);
-    z-index: 10000;
-    display: none;
-    animation: slideInRight 0.5s ease;
-    font-size: 16px;
-    font-weight: 600;
-    min-width: 300px;
-}
-
-.toast-notification.show {
-    display: block;
-}
-
-.toast-notification.error {
-    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
-    box-shadow: 0 10px 30px rgba(220, 53, 69, 0.4);
-}
-
-@keyframes slideInRight {
-    from {
-        opacity: 0;
-        transform: translateX(100px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
-    </style>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/styles.css">
 </head>
-<body>
+<body class="admin-body">
     <div class="container">
         <!-- Login Form -->
         <div class="login-container" id="loginForm">
@@ -386,43 +18,35 @@
                 <p>Đăng nhập để quản lý hệ thống</p>
             </div>
 
-            <div class="error-message" id="errorMessage"></div>
-
-            <form id="loginFormElement">
+            <form id="loginFormElement" onsubmit="return false;">
                 <div class="form-group">
                     <label>👤 Tên đăng nhập</label>
-                    <input type="text" id="username" placeholder="Nhập username" required>
+                    <input type="text" id="username" class="form-control" placeholder="Nhập username" required autocomplete="username">
                 </div>
 
                 <div class="form-group">
                     <label>🔑 Mật khẩu</label>
-                    <input type="password" id="password" placeholder="Nhập password" required>
+                    <input type="password" id="password" class="form-control" placeholder="Nhập password" required autocomplete="current-password">
                 </div>
 
-                <button type="submit" class="btn btn-primary">Đăng nhập</button>
+                <button type="submit" class="btn btn-primary btn-block">Đăng nhập</button>
             </form>
 
             <div class="default-info">
-                <p style="margin-bottom: 8px;">
-                    <strong>📝 liên hệ 0394304799 để lấy pass</strong>
-                </p>
-                <p>
-                    <!-- Username: <strong>admin</strong> | Password: <strong>admin123</strong> -->
-                </p>
+                <p><strong>📞 Liên hệ 0394304799 để lấy mật khẩu</strong></p>
             </div>
         </div>
 
         <!-- Admin Panel -->
-        <div class="admin-panel" id="adminPanel">
-            <div class="header">
+        <div class="admin-panel" id="adminPanel" style="display: none;">
+            <!-- Header -->
+            <div class="admin-header">
                 <h1>🎛️ Bảng Điều Khiển</h1>
                 <div class="user-info">
                     <span class="username" id="displayUsername"></span>
-                    <button class="btn-logout" onclick="handleLogout()">Đăng xuất</button>
+                    <button class="btn btn-danger btn-sm" onclick="handleLogout()">Đăng xuất</button>
                 </div>
             </div>
-
-            <div class="success-message" id="successMessage"></div>
 
             <!-- Card 1: Google Form Link -->
             <div class="card">
@@ -433,32 +57,27 @@
 
                 <div class="info-box">
                     <p><strong>💡 Hướng dẫn:</strong> Bạn có thể paste:</p>
-                    <p style="margin-top: 8px;">
+                    <p>
                         ✅ <strong>Link trực tiếp:</strong> https://docs.google.com/forms/d/e/.../viewform<br>
                         ✅ <strong>Code iframe:</strong> &lt;iframe src="..."&gt;&lt;/iframe&gt;
                     </p>
-                    <p style="margin-top: 8px; font-size: 13px;">
-                        Hệ thống sẽ tự động trích xuất link và thêm embedded=true
-                    </p>
+                    <p>Hệ thống sẽ tự động trích xuất link và thêm embedded=true</p>
                 </div>
 
-                <div class="current-value" id="currentFormLink">
-                    <strong>Link hiện tại:</strong> <span id="currentLinkText">Chưa có dữ liệu</span>
+                <div class="current-value">
+                    <strong>Link hiện tại:</strong> 
+                    <span id="currentLinkText">Chưa có dữ liệu</span>
                 </div>
 
                 <div class="form-group">
                     <label>🔗 Link Google Form mới</label>
-                    <textarea id="formLink" placeholder="Paste link Google Form embedded tại đây..."></textarea>
+                    <textarea id="formLink" class="form-control" rows="3" placeholder="Paste link Google Form embedded tại đây..."></textarea>
                 </div>
 
                 <button class="btn btn-primary" onclick="saveFormLink()">💾 Lưu Link Form</button>
-                <button class="btn btn-secondary" onclick="deleteFormLink()" style="margin-top: 10px;">
-    🗑️ Xóa Link Form
-</button>
+                <button class="btn btn-secondary" onclick="deleteFormLink()">🗑️ Xóa Link Form</button>
             </div>
-<button class="btn btn-secondary" onclick="deleteFormLink()" style="margin-top: 10px;">
-    🗑️ Xóa Link Form
-</button>
+
             <!-- Card 2: Logo Management -->
             <div class="card">
                 <div class="card-header">
@@ -470,621 +89,144 @@
                     <p><strong>💡 Hướng dẫn:</strong> Upload ảnh logo mới (JPG, PNG, GIF). Ảnh nên có kích thước vuông (ví dụ: 500x500px) để hiển thị tốt nhất.</p>
                 </div>
 
-                <div class="preview-container" id="currentLogoPreview">
-                    <p style="color: #666; margin-bottom: 10px;"><strong>Logo hiện tại:</strong></p>
-                    <img id="currentLogo" class="preview-image" src="img/logo.jpg" alt="Current Logo" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22%3E%3Crect fill=%22%234A90E2%22 width=%22200%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-size=%2248%22 fill=%22white%22 text-anchor=%22middle%22 dy=%22.3em%22%3EAEV%3C/text%3E%3C/svg%3E'">
+                <div class="preview-container">
+                    <p><strong>Logo hiện tại:</strong></p>
+                    <img id="currentLogo" class="preview-image" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Crect fill='%234A90E2' width='200' height='200'/%3E%3Ctext x='50%25' y='50%25' font-size='48' fill='white' text-anchor='middle' dy='.3em'%3EAEV%3C/text%3E%3C/svg%3E" alt="Current Logo">
                 </div>
 
-                <div class="form-group" style="margin-top: 20px;">
+                <div class="form-group">
                     <label class="file-upload" for="logoUpload">
                         <span class="icon">📤</span>
                         <div class="file-upload-text">
                             <strong>Chọn ảnh logo mới</strong><br>
-                            <span style="font-size: 13px;">Click để chọn file từ máy tính</span>
+                            <span>Click để chọn file từ máy tính</span>
                         </div>
                         <input type="file" id="logoUpload" accept="image/*">
                     </label>
                 </div>
 
                 <div class="preview-container" id="newLogoPreview" style="display: none;">
-                    <p style="color: #666; margin-bottom: 10px;"><strong>Preview ảnh mới:</strong></p>
+                    <p><strong>Preview ảnh mới:</strong></p>
                     <img id="previewImage" class="preview-image" alt="Preview">
                 </div>
 
-                <button class="btn btn-primary" id="saveLogoBtn" onclick="saveLogo()" style="display: none; margin-top: 15px;">💾 Lưu Logo Mới</button>
+                <button class="btn btn-primary" id="saveLogoBtn" onclick="saveLogo()" style="display: none;">💾 Lưu Logo Mới</button>
             </div>
-<!-- Card 3: Quản lý Sidebar -->
-<div class="card">
-    <div class="card-header">
-        <span class="icon">📝</span>
-        <h2>Quản lý Nội dung Sidebar</h2>
-    </div>
 
-    <div class="info-box">
-        <p><strong>💡 Hướng dẫn:</strong> Chỉnh sửa nội dung 4 mục trong sidebar bên trái (chỉ hiện trên PC).</p>
-    </div>
+            <!-- Card 3: Sidebar Content -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="icon">📄</span>
+                    <h2>Quản lý Nội dung Sidebar</h2>
+                </div>
 
-    <div class="form-group">
-        <label>📋 Tiêu đề Hướng dẫn</label>
-        <input type="text" id="sidebarGuideTitle" placeholder="VD: 📋 Hướng dẫn" value="📋 Hướng dẫn">
-    </div>
+                <div class="info-box">
+                    <p><strong>💡 Hướng dẫn:</strong> Chỉnh sửa nội dung 4 mục trong sidebar bên trái (chỉ hiện trên PC).</p>
+                </div>
 
-    <div class="form-group">
-        <label>📋 Nội dung Hướng dẫn</label>
-        <textarea id="sidebarGuideContent" placeholder="Nội dung chi tiết...">Vui lòng điền đầy đủ thông tin vào biểu mẫu bên cạnh. Mọi thông tin sẽ được bảo mật.</textarea>
-    </div>
+                <div class="form-group">
+                    <label>📋 Tiêu đề Hướng dẫn</label>
+                    <input type="text" id="sidebarGuideTitle" class="form-control" placeholder="VD: 📋 Hướng dẫn" value="📋 Hướng dẫn">
+                </div>
 
-    <div class="form-group">
-        <label>⏱️ Tiêu đề Thời gian</label>
-        <input type="text" id="sidebarTimeTitle" placeholder="VD: ⏱️ Thời gian" value="⏱️ Thời gian">
-    </div>
+                <div class="form-group">
+                    <label>📋 Nội dung Hướng dẫn</label>
+                    <textarea id="sidebarGuideContent" class="form-control" rows="3">Vui lòng điền đầy đủ thông tin vào biểu mẫu bên cạnh. Mọi thông tin sẽ được bảo mật.</textarea>
+                </div>
 
-    <div class="form-group">
-        <label>⏱️ Nội dung Thời gian</label>
-        <textarea id="sidebarTimeContent" placeholder="Nội dung chi tiết...">Hoàn thành biểu mẫu chỉ mất khoảng 3-5 phút.</textarea>
-    </div>
+                <div class="form-group">
+                    <label>⏱️ Tiêu đề Thời gian</label>
+                    <input type="text" id="sidebarTimeTitle" class="form-control" placeholder="VD: ⏱️ Thời gian" value="⏱️ Thời gian">
+                </div>
 
-    <div class="form-group">
-        <label>✉️ Tiêu đề Xác nhận</label>
-        <input type="text" id="sidebarConfirmTitle" placeholder="VD: ✉️ Xác nhận" value="✉️ Xác nhận">
-    </div>
+                <div class="form-group">
+                    <label>⏱️ Nội dung Thời gian</label>
+                    <textarea id="sidebarTimeContent" class="form-control" rows="2">Hoàn thành biểu mẫu chỉ mất khoảng 3-5 phút.</textarea>
+                </div>
 
-    <div class="form-group">
-        <label>✉️ Nội dung Xác nhận</label>
-        <textarea id="sidebarConfirmContent" placeholder="Nội dung chi tiết...">Bạn sẽ nhận email xác nhận ngay sau khi gửi form thành công.</textarea>
-    </div>
+                <div class="form-group">
+                    <label>✉️ Tiêu đề Xác nhận</label>
+                    <input type="text" id="sidebarConfirmTitle" class="form-control" placeholder="VD: ✉️ Xác nhận" value="✉️ Xác nhận">
+                </div>
 
-    <div class="form-group">
-        <label>💬 Tiêu đề Hỗ trợ</label>
-        <input type="text" id="sidebarSupportTitle" placeholder="VD: 💬 Cần hỗ trợ?" value="💬 Cần hỗ trợ?">
-    </div>
+                <div class="form-group">
+                    <label>✉️ Nội dung Xác nhận</label>
+                    <textarea id="sidebarConfirmContent" class="form-control" rows="2">Bạn sẽ nhận email xác nhận ngay sau khi gửi form thành công.</textarea>
+                </div>
 
-    <div class="form-group">
-        <label>💬 Nội dung Hỗ trợ</label>
-        <textarea id="sidebarSupportContent" placeholder="Nội dung chi tiết...">Liên hệ với chúng tôi qua Zalo nếu gặp vấn đề</textarea>
-    </div>
+                <div class="form-group">
+                    <label>💬 Tiêu đề Hỗ trợ</label>
+                    <input type="text" id="sidebarSupportTitle" class="form-control" placeholder="VD: 💬 Cần hỗ trợ?" value="💬 Cần hỗ trợ?">
+                </div>
 
-    <button class="btn btn-primary" onclick="saveSidebarContent()">💾 Lưu Nội dung Sidebar</button>
-</div>
+                <div class="form-group">
+                    <label>💬 Nội dung Hỗ trợ</label>
+                    <textarea id="sidebarSupportContent" class="form-control" rows="2">Liên hệ với chúng tôi qua Zalo nếu gặp vấn đề</textarea>
+                </div>
 
-<!-- Card 4: Quản lý Số Zalo -->
-<div class="card">
-    <div class="card-header">
-        <span class="icon">📱</span>
-        <h2>Quản lý Số Zalo</h2>
-    </div>
-
-    <div class="info-box">
-        <p><strong>💡 Hướng dẫn:</strong> Thay đổi số điện thoại Zalo hiển thị trong popup liên hệ.</p>
-    </div>
-
-    <div class="current-value" id="currentZaloNumber">
-        <strong>Số hiện tại:</strong> <span id="currentZaloText">0394304799</span>
-    </div>
-
-    <div class="form-group">
-        <label>📱 Số Zalo mới</label>
-        <input type="tel" id="zaloNumber" placeholder="VD: 0394304799" pattern="[0-9]{10,11}" value="0394304799">
-        <small style="color: #666; font-size: 12px; margin-top: 5px; display: block;">
-            Nhập 10-11 số, không có khoảng trắng hoặc ký tự đặc biệt
-        </small>
-    </div>
-
-    <button class="btn btn-primary" onclick="saveZaloNumber()">💾 Lưu Số Zalo</button>
-</div>
-            <!-- Card 3: Export Code -->
-<!-- Card 3: Export/Import Config -->
-<div class="card">
-    <div class="card-header">
-        <span class="icon">💾</span>
-        <h2>Xuất/Nhập Cấu Hình</h2>
-    </div>
-
-    <div class="info-box">
-        <p><strong>💡 Hướng dẫn:</strong></p>
-        <p style="margin-top: 8px;">
-            <strong>Xuất:</strong> Tải file <code>config.json</code> chứa toàn bộ cấu hình (form link, logo, sidebar, zalo)<br>
-            <strong>Nhập:</strong> Upload file <code>config.json</code> để khôi phục cấu hình trên máy khác
-        </p>
-    </div>
-
-    <button class="btn btn-primary" onclick="exportConfig()">
-        📥 Xuất Config (Tải file)
-    </button>
-
-    <div class="form-group" style="margin-top: 20px;">
-        <label class="file-upload" for="configImport">
-            <span class="icon">📤</span>
-            <div class="file-upload-text">
-                <strong>Nhập Config từ file</strong><br>
-                <span style="font-size: 13px;">Click để chọn file config.json</span>
+                <button class="btn btn-primary" onclick="saveSidebarContent()">💾 Lưu Nội dung Sidebar</button>
             </div>
-            <input type="file" id="configImport" accept=".json">
-        </label>
+
+            <!-- Card 4: Zalo Number -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="icon">📱</span>
+                    <h2>Quản lý Số Zalo</h2>
+                </div>
+
+                <div class="info-box">
+                    <p><strong>💡 Hướng dẫn:</strong> Thay đổi số điện thoại Zalo hiển thị trong popup liên hệ.</p>
+                </div>
+
+                <div class="current-value">
+                    <strong>Số hiện tại:</strong> 
+                    <span id="currentZaloText">0394304799</span>
+                </div>
+
+                <div class="form-group">
+                    <label>📱 Số Zalo mới</label>
+                    <input type="tel" id="zaloNumber" class="form-control" placeholder="VD: 0394304799" pattern="[0-9]{10,11}" value="0394304799">
+                    <small class="form-text">Nhập 10-11 số, không có khoảng trắng hoặc ký tự đặc biệt</small>
+                </div>
+
+                <button class="btn btn-primary" onclick="saveZaloNumber()">💾 Lưu Số Zalo</button>
+            </div>
+
+            <!-- Card 5: Export/Import Config -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="icon">💾</span>
+                    <h2>Xuất/Nhập Cấu Hình</h2>
+                </div>
+
+                <div class="info-box">
+                    <p><strong>💡 Hướng dẫn:</strong></p>
+                    <p>
+                        <strong>Xuất:</strong> Tải file <code>config.json</code> chứa toàn bộ cấu hình<br>
+                        <strong>Nhập:</strong> Upload file <code>config.json</code> để khôi phục cấu hình
+                    </p>
+                </div>
+
+                <button class="btn btn-primary" onclick="exportConfig()">📥 Xuất Config (Tải file)</button>
+
+                <div class="form-group">
+                    <label class="file-upload" for="configImport">
+                        <span class="icon">📤</span>
+                        <div class="file-upload-text">
+                            <strong>Nhập Config từ file</strong><br>
+                            <span>Click để chọn file config.json</span>
+                        </div>
+                        <input type="file" id="configImport" accept=".json">
+                    </label>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
 
-    <script>
-        let currentLogoBase64 = '';
-        let isLoggedIn = false;
-
-        // Mock storage cho môi trường local - dùng localStorage để share data
-        if (typeof window.storage === 'undefined') {
-            console.log('⚠️ Sử dụng localStorage để lưu trữ');
-            window.storage = {
-                get: function(key) {
-                    try {
-                        const value = localStorage.getItem(key);
-                        return Promise.resolve(value ? { key: key, value: value } : null);
-                    } catch (e) {
-                        return Promise.resolve(null);
-                    }
-                },
-                set: function(key, value) {
-                    try {
-                        localStorage.setItem(key, value);
-                        console.log('💾 Đã lưu vào localStorage:', key);
-                        return Promise.resolve({ key: key, value: value });
-                    } catch (e) {
-                        console.error('❌ Lỗi lưu localStorage:', e);
-                        return Promise.resolve(null);
-                    }
-                },
-                delete: function(key) {
-                    try {
-                        localStorage.removeItem(key);
-                        return Promise.resolve({ key: key, deleted: true });
-                    } catch (e) {
-                        return Promise.resolve(null);
-                    }
-                },
-                list: function(prefix) {
-                    try {
-                        const keys = [];
-                        for (let i = 0; i < localStorage.length; i++) {
-                            const key = localStorage.key(i);
-                            if (!prefix || key.startsWith(prefix)) {
-                                keys.push(key);
-                            }
-                        }
-                        return Promise.resolve({ keys: keys });
-                    } catch (e) {
-                        return Promise.resolve({ keys: [] });
-                    }
-                }
-            };
-        }
-
-        // Load data khi trang được tải
-        window.addEventListener('load', function() {
-            console.log('🔄 Trang admin đã load');
-            loadSavedData();
-        });
-
-        // Load dữ liệu đã lưu
-        async function loadSavedData() {
-            try {
-                console.log('🔍 Đang load dữ liệu đã lưu...');
-                
-                // Load form link
-                const formLinkData = await window.storage.get('aev_form_link');
-                if (formLinkData && formLinkData.value) {
-                    console.log('✅ Đã load form link');
-                    document.getElementById('currentLinkText').textContent = formLinkData.value;
-                    document.getElementById('formLink').value = formLinkData.value;
-                } else {
-                    console.log('ℹ️ Chưa có form link đã lưu');
-                }
-
-                // Load logo
-                const logoData = await window.storage.get('aev_logo_base64');
-                if (logoData && logoData.value) {
-                    console.log('✅ Đã load logo');
-                    currentLogoBase64 = logoData.value;
-                    document.getElementById('currentLogo').src = logoData.value;
-                } else {
-                    console.log('ℹ️ Chưa có logo đã lưu');
-                }
-            } catch (error) {
-                        await loadSidebarContent();
-        await loadZaloNumber();
-                console.warn('⚠️ Lỗi khi load dữ liệu:', error);
-            }
-        }
-
-        // Xử lý đăng nhập
-        document.getElementById('loginFormElement').addEventListener('submit', function(event) {
-            event.preventDefault();
-            
-            const username = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value.trim();
-            
-            console.log('🔐 Đang đăng nhập với:', username);
-            
-            if (username === 'admin' && password === 'admin123') {
-                isLoggedIn = true;
-                console.log('✅ Đăng nhập thành công!');
-                document.getElementById('loginForm').style.display = 'none';
-                document.getElementById('adminPanel').style.display = 'block';
-                document.getElementById('displayUsername').textContent = '👤 ' + username;
-            } else {
-                console.log('❌ Sai thông tin đăng nhập');
-                showError('❌ Sai tên đăng nhập hoặc mật khẩu!');
-            }
-        });
-
-        // Đăng xuất
-        function handleLogout() {
-            isLoggedIn = false;
-            document.getElementById('loginForm').style.display = 'block';
-            document.getElementById('adminPanel').style.display = 'none';
-            document.getElementById('username').value = '';
-            document.getElementById('password').value = '';
-        }
-
-        // Hiển thị lỗi
-// Hiển thị thông báo thành công
-function showSuccess(message) {
-    // Hiện thông báo trong card
-    const successDiv = document.getElementById('successMessage');
-    successDiv.textContent = message;
-    successDiv.style.display = 'block';
-    
-    // Tạo toast notification
-    showToast(message, 'success');
-    
-    setTimeout(function() {
-        successDiv.style.display = 'none';
-    }, 5000);
-}
-
-// Hiển thị lỗi
-function showError(message) {
-    const errorDiv = document.getElementById('errorMessage');
-    errorDiv.textContent = message;
-    errorDiv.style.display = 'block';
-    
-    // Tạo toast notification
-    showToast(message, 'error');
-    
-    setTimeout(function() {
-        errorDiv.style.display = 'none';
-    }, 5000);
-}
-
-// Hàm tạo Toast Notification
-function showToast(message, type) {
-    // Tạo element toast
-    const toast = document.createElement('div');
-    toast.className = 'toast-notification';
-    if (type === 'error') {
-        toast.classList.add('error');
-    }
-    toast.textContent = message;
-    
-    // Thêm vào body
-    document.body.appendChild(toast);
-    
-    // Hiện toast
-    setTimeout(() => {
-        toast.classList.add('show');
-    }, 100);
-    
-    // Ẩn sau 4 giây
-    setTimeout(() => {
-        toast.classList.remove('show');
-        setTimeout(() => {
-            document.body.removeChild(toast);
-        }, 500);
-    }, 4000);
-}
-        // Hiển thị thông báo thành công
-        function showSuccess(message) {
-            const successDiv = document.getElementById('successMessage');
-            successDiv.textContent = message;
-            successDiv.style.display = 'block';
-            setTimeout(function() {
-                successDiv.style.display = 'none';
-            }, 4000);
-        }
-
-        // Lưu Form Link
-        async function saveFormLink() {
-            let formLink = document.getElementById('formLink').value.trim();
-            
-            if (!formLink) {
-                showError('❌ Vui lòng nhập link Google Form!');
-                return;
-            }
-
-            // Trích xuất link từ iframe code nếu cần
-            if (formLink.includes('<iframe')) {
-                console.log('🔍 Phát hiện iframe code, đang trích xuất link...');
-                const srcMatch = formLink.match(/src="([^"]+)"/);
-                if (srcMatch && srcMatch[1]) {
-                    formLink = srcMatch[1];
-                    console.log('✅ Đã trích xuất link:', formLink);
-                    // Cập nhật textarea để user thấy link đã trích xuất
-                    document.getElementById('formLink').value = formLink;
-                } else {
-                    showError('❌ Không tìm thấy link trong iframe code!');
-                    return;
-                }
-            }
-
-            // Kiểm tra link hợp lệ
-            if (!formLink.includes('docs.google.com/forms')) {
-                showError('❌ Link không hợp lệ! Vui lòng nhập link Google Form.');
-                return;
-            }
-
-            // Đảm bảo có embedded=true
-            if (!formLink.includes('embedded=true')) {
-                if (formLink.includes('?')) {
-                    formLink += '&embedded=true';
-                } else {
-                    formLink += '?embedded=true';
-                }
-                console.log('✅ Đã thêm embedded=true:', formLink);
-            }
-
-            try {
-                await window.storage.set('aev_form_link', formLink);
-                document.getElementById('currentLinkText').textContent = formLink;
-                showSuccess('✅ Đã lưu link Google Form thành công!');
-            } catch (error) {
-                showError('❌ Lỗi khi lưu: ' + error.message);
-            }
-        }
-
-        // Xử lý upload logo
-        document.getElementById('logoUpload').addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            
-            if (!file) return;
-
-            if (!file.type.startsWith('image/')) {
-                showError('❌ Vui lòng chọn file ảnh!');
-                return;
-            }
-
-            const reader = new FileReader();
-            
-            reader.onload = function(e) {
-                const base64 = e.target.result;
-                currentLogoBase64 = base64;
-                
-                document.getElementById('previewImage').src = base64;
-                document.getElementById('newLogoPreview').style.display = 'block';
-                document.getElementById('saveLogoBtn').style.display = 'block';
-            };
-            
-            reader.readAsDataURL(file);
-        });
-
-        // Lưu Logo
-        async function saveLogo() {
-            if (!currentLogoBase64) {
-                showError('❌ Chưa có ảnh để lưu!');
-                return;
-            }
-
-            try {
-                await window.storage.set('aev_logo_base64', currentLogoBase64);
-                document.getElementById('currentLogo').src = currentLogoBase64;
-                document.getElementById('newLogoPreview').style.display = 'none';
-                document.getElementById('saveLogoBtn').style.display = 'none';
-                showSuccess('✅ Đã lưu logo mới thành công!');
-            } catch (error) {
-                showError('❌ Lỗi khi lưu: ' + error.message);
-            }
-        }
-
-        // Export HTML đã cập nhật
-        async function exportUpdatedHTML() {
-            try {
-                const formLinkData = await window.storage.get('aev_form_link');
-                const logoData = await window.storage.get('aev_logo_base64');
-
-                const formLink = formLinkData ? formLinkData.value : 'LINK_FORM_MAC_DINH';
-                const logoBase64 = logoData ? logoData.value : 'LOGO_MAC_DINH';
-
-                alert('✅ Dữ liệu đã được lưu vào Storage!\n\nForm Link: ' + (formLinkData ? 'Có' : 'Chưa có') + '\nLogo: ' + (logoData ? 'Có' : 'Chưa có') + '\n\nFile index.html sẽ tự động load dữ liệu này khi mở.');
-                
-                showSuccess('✅ Dữ liệu đã sẵn sàng! Mở lại index.html để xem kết quả.');
-            } catch (error) {
-                showError('❌ Lỗi: ' + error.message);
-            }
-        }
-        // Load Sidebar Content khi trang load
-async function loadSidebarContent() {
-    try {
-        const sidebarData = await window.storage.get('aev_sidebar_content');
-        if (sidebarData && sidebarData.value) {
-            const content = JSON.parse(sidebarData.value);
-            document.getElementById('sidebarGuideTitle').value = content.guideTitle || '';
-            document.getElementById('sidebarGuideContent').value = content.guideContent || '';
-            document.getElementById('sidebarTimeTitle').value = content.timeTitle || '';
-            document.getElementById('sidebarTimeContent').value = content.timeContent || '';
-            document.getElementById('sidebarConfirmTitle').value = content.confirmTitle || '';
-            document.getElementById('sidebarConfirmContent').value = content.confirmContent || '';
-            document.getElementById('sidebarSupportTitle').value = content.supportTitle || '';
-            document.getElementById('sidebarSupportContent').value = content.supportContent || '';
-        }
-    } catch (error) {
-        console.log('Chưa có dữ liệu sidebar');
-    }
-}
-
-// Lưu Sidebar Content
-async function saveSidebarContent() {
-    const content = {
-        guideTitle: document.getElementById('sidebarGuideTitle').value,
-        guideContent: document.getElementById('sidebarGuideContent').value,
-        timeTitle: document.getElementById('sidebarTimeTitle').value,
-        timeContent: document.getElementById('sidebarTimeContent').value,
-        confirmTitle: document.getElementById('sidebarConfirmTitle').value,
-        confirmContent: document.getElementById('sidebarConfirmContent').value,
-        supportTitle: document.getElementById('sidebarSupportTitle').value,
-        supportContent: document.getElementById('sidebarSupportContent').value
-    };
-
-    try {
-        await window.storage.set('aev_sidebar_content', JSON.stringify(content));
-        showSuccess('✅ Đã lưu nội dung Sidebar thành công!');
-    } catch (error) {
-        showError('❌ Lỗi khi lưu: ' + error.message);
-    }
-}
-
-// Load Số Zalo khi trang load
-async function loadZaloNumber() {
-    try {
-        const zaloData = await window.storage.get('aev_zalo_number');
-        if (zaloData && zaloData.value) {
-            document.getElementById('currentZaloText').textContent = zaloData.value;
-            document.getElementById('zaloNumber').value = zaloData.value;
-        }
-    } catch (error) {
-        console.log('Chưa có số Zalo');
-    }
-}
-
-// Lưu Số Zalo
-async function saveZaloNumber() {
-    let zaloNumber = document.getElementById('zaloNumber').value.trim();
-    
-    // Validate số điện thoại
-    if (!zaloNumber) {
-        showError('❌ Vui lòng nhập số điện thoại!');
-        return;
-    }
-    
-    // Loại bỏ khoảng trắng và ký tự không phải số
-    zaloNumber = zaloNumber.replace(/\D/g, '');
-    
-    if (zaloNumber.length < 10 || zaloNumber.length > 11) {
-        showError('❌ Số điện thoại phải có 10-11 số!');
-        return;
-    }
-
-    try {
-        await window.storage.set('aev_zalo_number', zaloNumber);
-        document.getElementById('currentZaloText').textContent = zaloNumber;
-        showSuccess('✅ Đã lưu số Zalo thành công!');
-    } catch (error) {
-        showError('❌ Lỗi khi lưu: ' + error.message);
-    }
-}
-async function deleteFormLink() {
-    if (confirm('⚠️ Bạn có chắc muốn xóa link form?')) {
-        try {
-            await window.storage.delete('aev_form_link');
-            document.getElementById('currentLinkText').textContent = 'Chưa có dữ liệu';
-            document.getElementById('formLink').value = '';
-            showSuccess('✅ Đã xóa link form thành công!');
-        } catch (error) {
-            showError('❌ Lỗi khi xóa: ' + error.message);
-        }
-    }
-}
-// ==================== EXPORT/IMPORT CONFIG ====================
-
-// Xuất toàn bộ config ra file JSON
-async function exportConfig() {
-    try {
-        // Thu thập tất cả dữ liệu từ storage
-        const formLinkData = await window.storage.get('aev_form_link');
-        const logoData = await window.storage.get('aev_logo_base64');
-        const sidebarData = await window.storage.get('aev_sidebar_content');
-        const zaloData = await window.storage.get('aev_zalo_number');
-        
-        // Tạo object chứa toàn bộ config
-        const config = {
-            formLink: formLinkData?.value || '',
-            logoBase64: logoData?.value || '',
-            sidebar: sidebarData?.value ? JSON.parse(sidebarData.value) : null,
-            zaloNumber: zaloData?.value || '',
-            exportDate: new Date().toLocaleString('vi-VN'),
-            version: '1.0'
-        };
-        
-        // Chuyển sang JSON
-        const jsonString = JSON.stringify(config, null, 2);
-        
-        // Tạo file để tải về
-        const blob = new Blob([jsonString], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        
-        // Tạo link tải xuống
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'config.json';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        
-        showSuccess('✅ Đã xuất config thành công! File config.json đã được tải về.');
-        
-    } catch (error) {
-        showError('❌ Lỗi khi xuất config: ' + error.message);
-    }
-}
-
-// Xử lý upload file config
-document.getElementById('configImport').addEventListener('change', async function(event) {
-    const file = event.target.files[0];
-    
-    if (!file) return;
-    
-    if (!file.name.endsWith('.json')) {
-        showError('❌ Vui lòng chọn file .json!');
-        return;
-    }
-    
-    try {
-        // Đọc file
-        const text = await file.text();
-        const config = JSON.parse(text);
-        
-        // Xác nhận trước khi import
-        if (!confirm('⚠️ Import config sẽ GHI ĐÈ toàn bộ cấu hình hiện tại!\n\nBạn có chắc chắn muốn tiếp tục?')) {
-            event.target.value = ''; // Reset input
-            return;
-        }
-        
-        // Lưu từng phần vào storage
-        if (config.formLink) {
-            await window.storage.set('aev_form_link', config.formLink);
-        }
-        
-        if (config.logoBase64) {
-            await window.storage.set('aev_logo_base64', config.logoBase64);
-        }
-        
-        if (config.sidebar) {
-            await window.storage.set('aev_sidebar_content', JSON.stringify(config.sidebar));
-        }
-        
-        if (config.zaloNumber) {
-            await window.storage.set('aev_zalo_number', config.zaloNumber);
-        }
-        
-        showSuccess('✅ Đã nhập config thành công! Đang tải lại trang...');
-        
-        // Reload sau 1.5s để load dữ liệu mới
-        setTimeout(() => {
-            location.reload();
-        }, 1500);
-        
-    } catch (error) {
-        showError('❌ Lỗi khi nhập config: ' + error.message);
-    }
-    
-    // Reset input
-    event.target.value = '';
-});
-    </script>
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/storageManager.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/admin.js"></script>
 </body>
 </html>
