@@ -113,16 +113,16 @@
                 margin-bottom: 30px;
             }
 
-     .sidebar-logo img {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 4px solid #f0f0f0;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    display: block;
-    margin: 0 auto;
-}
+            .sidebar-logo img {
+                width: 120px;
+                height: 120px;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 4px solid #f0f0f0;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                display: block;
+                margin: 0 auto;
+            }
 
             .sidebar-info {
                 margin-top: 20px;
@@ -517,6 +517,31 @@
             }
         }
 
+        /* Nút Admin ẩn */
+        .admin-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #4A90E2 0%, #50C878 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+
+        .admin-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(74, 144, 226, 0.5);
+        }
+
         @media (max-width: 768px) {
             .zalo-popup {
                 padding: 25px;
@@ -552,7 +577,7 @@ s0.parentNode.insertBefore(s1,s0);
     <!-- Header compact -->
     <div class="header">
         <div class="header-left">
-<img id="headerLogo" src="" alt="AEV Logo" class="logo" style="display:none;">
+            <img id="headerLogo" src="" alt="AEV Logo" class="logo" style="display:none;">
             <div class="header-title">
                 <h1>📋 Biểu Mẫu Đăng Ký</h1>
                 <p>Hệ thống đăng ký trực tuyến</p>
@@ -568,8 +593,7 @@ s0.parentNode.insertBefore(s1,s0);
         <!-- Sidebar (chỉ hiện trên PC) -->
         <aside class="sidebar">
             <div class="sidebar-logo">
-                <!-- <img id="sidebarLogo" src="img/logo.jpg" alt="AEV Logo" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22120%22 height=%22120%22%3E%3Crect fill=%22%234A90E2%22 width=%22120%22 height=%22120%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-size=%2248%22 fill=%22white%22 text-anchor=%22middle%22 dy=%22.3em%22%3EAEV%3C/text%3E%3C/svg%3E'"> -->
-            <img id="sidebarLogo" src="" alt="AEV Logo" style="display:none;">
+                <img id="sidebarLogo" src="" alt="AEV Logo" style="display:none;">
             </div>
 
             <div class="sidebar-info">
@@ -668,13 +692,17 @@ s0.parentNode.insertBefore(s1,s0);
         ✅ Đã copy số điện thoại!
     </div>
 
+    <!-- Nút Admin ẩn -->
+    <a href="admin.html" class="admin-button" title="Đăng nhập Admin">
+        🔧
+    </a>
+
     <script>
-        // DEFAULT VALUES - Sẽ được override nếu có dữ liệu từ admin
-        const DEFAULT_FORM_LINK = ''; // Để trống, không dùng form mặc định
-        // const DEFAULT_FORM_LINK = 'https://docs.google.com/forms/d/e/1FAIpQLScIHCYDIh8Cq6bKyYjMM5mui8-GUnSXaVV2RuuKtCGedah-cg/viewform?embedded=true';
+        // DEFAULT VALUES
+        const DEFAULT_FORM_LINK = '';
         const DEFAULT_LOGO_PATH = 'img/logo.jpg';
 
-        // Mock storage cho môi trường local (giống admin.html) - dùng localStorage để share data
+        // Mock storage cho môi trường local
         if (typeof window.storage === 'undefined') {
             console.log('⚠️ Sử dụng localStorage để lưu trữ');
             window.storage = {
@@ -721,7 +749,7 @@ s0.parentNode.insertBefore(s1,s0);
             };
         }
 
-        // Load dữ liệu từ admin panel khi trang được tải
+        // Load dữ liệu tử admin panel khi trang được tải
         window.addEventListener('load', async function() {
             await loadAdminData();
             
@@ -734,120 +762,115 @@ s0.parentNode.insertBefore(s1,s0);
         });
 
         // Hàm load dữ liệu từ storage
-// Hàm load dữ liệu từ storage
-async function loadAdminData() {
-    try {
-        console.log('🔍 Đang kiểm tra dữ liệu từ Admin...');
-        
-        // 1. Load Form Link từ admin
-        // const formLinkData = await window.storage.get('aev_form_link');
-        // if (formLinkData && formLinkData.value) {
-        //     console.log('✅ Đã load Form Link từ Admin:', formLinkData.value);
-        //     document.getElementById('formFrame').src = formLinkData.value;
-        // } else {
-        //     console.log('ℹ️ Sử dụng Form Link mặc định');
-        //     document.getElementById('formFrame').src = DEFAULT_FORM_LINK;
-        // }
-        // Load Form Link từ admin
-const formLinkData = await window.storage.get('aev_form_link');
-if (formLinkData && formLinkData.value) {
-    console.log('✅ Đã load Form Link từ Admin:', formLinkData.value);
-    document.getElementById('formFrame').src = formLinkData.value;
-} else {
-    console.log('⚠️ Chưa có Form Link! Vui lòng vào Admin Panel để cập nhật.');
-    // Hiển thị thông báo thay vì form
-    document.getElementById('loading').innerHTML = `
-        <div style="text-align: center; padding: 60px 20px;">
-            <div style="font-size: 48px; margin-bottom: 20px;">⚠️</div>
-            <h3 style="color: #dc3545; margin-bottom: 15px;">Chưa có biểu mẫu</h3>
-            <p style="color: #666; margin-bottom: 20px;">
-                Vui lòng vào Admin Panel để cập nhật link Google Form.
-            </p>
-            <a href="admin.html" style="
-                display: inline-block;
-                padding: 12px 30px;
-                background: linear-gradient(135deg, #4A90E2 0%, #50C878 100%);
-                color: white;
-                border-radius: 8px;
-                text-decoration: none;
-                font-weight: 600;
-            ">
-                🔐 Vào Admin Panel
-            </a>
-        </div>
-    `;
-}
+        async function loadAdminData() {
+            try {
+                console.log('🔍 Đang kiểm tra dữ liệu từ Admin...');
+                
+                // 1. Load Form Link từ admin
+                const formLinkData = await window.storage.get('aev_form_link');
+                if (formLinkData && formLinkData.value) {
+                    console.log('✅ Đã load Form Link từ Admin:', formLinkData.value);
+                    document.getElementById('formFrame').src = formLinkData.value;
+                } else {
+                    console.log('⚠️ Chưa có Form Link! Vui lòng vào Admin Panel để cập nhật.');
+                    // Hiển thị thông báo thay vì form
+                    document.getElementById('loading').innerHTML = `
+                        <div style="text-align: center; padding: 60px 20px;">
+                            <div style="font-size: 48px; margin-bottom: 20px;">⚠️</div>
+                            <h3 style="color: #dc3545; margin-bottom: 15px;">Chưa có biểu mẫu</h3>
+                            <p style="color: #666; margin-bottom: 20px;">
+                                Vui lòng vào Admin Panel để cập nhật link Google Form.
+                            </p>
+                            <a href="admin.html" style="
+                                display: inline-block;
+                                padding: 12px 30px;
+                                background: linear-gradient(135deg, #4A90E2 0%, #50C878 100%);
+                                color: white;
+                                border-radius: 8px;
+                                text-decoration: none;
+                                font-weight: 600;
+                            ">
+                                🔧 Vào Admin Panel
+                            </a>
+                        </div>
+                    `;
+                }
 
-        // 2. Load Logo từ admin
-        const logoData = await window.storage.get('aev_logo_base64');
-        if (logoData && logoData.value) {
-            console.log('✅ Đã load Logo từ Admin');
-            
-            const headerLogo = document.getElementById('headerLogo');
-            const sidebarLogo = document.getElementById('sidebarLogo');
-            
-            // Cập nhật src với ảnh base64
-            headerLogo.src = logoData.value;
-            sidebarLogo.src = logoData.value;
-            
-            // Xóa onerror để tránh fallback
-            headerLogo.onerror = null;
-            sidebarLogo.onerror = null;
-            
-            // Hiển thị logo
-            headerLogo.style.display = 'block';
-            sidebarLogo.style.display = 'block';
-        } else {
-            console.log('ℹ️ Chưa có logo trong storage');
-        }
+                // 2. Load Logo từ admin
+                const logoData = await window.storage.get('aev_logo_base64');
+                if (logoData && logoData.value) {
+                    console.log('✅ Đã load Logo từ Admin');
+                    
+                    const headerLogo = document.getElementById('headerLogo');
+                    const sidebarLogo = document.getElementById('sidebarLogo');
+                    
+                    // Cập nhật src với ảnh base64
+                    headerLogo.src = logoData.value;
+                    sidebarLogo.src = logoData.value;
+                    
+                    // Xóa onerror để tránh fallback
+                    headerLogo.onerror = null;
+                    sidebarLogo.onerror = null;
+                    
+                    // Hiển thị logo
+                    headerLogo.style.display = 'block';
+                    sidebarLogo.style.display = 'block';
+                } else {
+                    console.log('ℹ️ Chưa có logo trong storage');
+                }
 
-        // 3. Load Sidebar Content từ admin
-        const sidebarData = await window.storage.get('aev_sidebar_content');
-        if (sidebarData && sidebarData.value) {
-            console.log('✅ Đã load Sidebar Content từ Admin');
-            const content = JSON.parse(sidebarData.value);
-            
-            document.getElementById('sidebarGuideTitle').textContent = content.guideTitle || '📋 Hướng dẫn';
-            document.getElementById('sidebarGuideContent').textContent = content.guideContent || 'Vui lòng điền đầy đủ thông tin vào biểu mẫu bên cạnh. Mọi thông tin sẽ được bảo mật.';
-            
-            document.getElementById('sidebarTimeTitle').textContent = content.timeTitle || '⏱️ Thời gian';
-            document.getElementById('sidebarTimeContent').textContent = content.timeContent || 'Hoàn thành biểu mẫu chỉ mất khoảng 3-5 phút.';
-            
-            document.getElementById('sidebarConfirmTitle').textContent = content.confirmTitle || '✉️ Xác nhận';
-            document.getElementById('sidebarConfirmContent').textContent = content.confirmContent || 'Bạn sẽ nhận email xác nhận ngay sau khi gửi form thành công.';
-            
-            document.getElementById('sidebarSupportTitle').textContent = content.supportTitle || '💬 Cần hỗ trợ?';
-            document.getElementById('sidebarSupportContent').textContent = content.supportContent || 'Liên hệ với chúng tôi qua Zalo nếu gặp vấn đề';
-        } else {
-            console.log('ℹ️ Sử dụng Sidebar Content mặc định');
-        }
+                // 3. Load Sidebar Content từ admin
+                const sidebarData = await window.storage.get('aev_sidebar_content');
+                if (sidebarData && sidebarData.value) {
+                    console.log('✅ Đã load Sidebar Content từ Admin');
+                    const content = JSON.parse(sidebarData.value);
+                    
+                    // Cập nhật các phần tử sidebar với dữ liệu đã lưu
+                    const sidebarElements = {
+                        'sidebarGuideTitle': content.guideTitle,
+                        'sidebarGuideContent': content.guideContent,
+                        'sidebarTimeTitle': content.timeTitle,
+                        'sidebarTimeContent': content.timeContent,
+                        'sidebarConfirmTitle': content.confirmTitle,
+                        'sidebarConfirmContent': content.confirmContent,
+                        'sidebarSupportTitle': content.supportTitle,
+                        'sidebarSupportContent': content.supportContent
+                    };
+                    
+                    for (const [id, value] of Object.entries(sidebarElements)) {
+                        const element = document.getElementById(id);
+                        if (element && value) {
+                            element.textContent = value;
+                        }
+                    }
+                } else {
+                    console.log('ℹ️ Sử dụng Sidebar Content mặc định');
+                }
 
-        // 4. Load Số Zalo từ admin
-        const zaloData = await window.storage.get('aev_zalo_number');
-        if (zaloData && zaloData.value) {
-            console.log('✅ Đã load Số Zalo từ Admin:', zaloData.value);
-            
-            // Cập nhật số Zalo ở popup
-            const phoneNumberElements = document.querySelectorAll('.phone-number');
-            phoneNumberElements.forEach(el => {
-                el.textContent = zaloData.value;
-            });
-            
-            // Cập nhật QR code
-            const qrImages = document.querySelectorAll('.qr-code img');
-            qrImages.forEach(img => {
-                img.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://zalo.me/${zaloData.value}`;
-            });
-        } else {
-            console.log('ℹ️ Sử dụng Số Zalo mặc định');
+                // 4. Load Số Zalo từ admin
+                const zaloData = await window.storage.get('aev_zalo_number');
+                if (zaloData && zaloData.value) {
+                    console.log('✅ Đã load Số Zalo từ Admin:', zaloData.value);
+                    
+                    // Cập nhật số Zalo ở popup
+                    const phoneNumberElements = document.querySelectorAll('.phone-number');
+                    phoneNumberElements.forEach(el => {
+                        el.textContent = zaloData.value;
+                    });
+                    
+                    // Cập nhật QR code
+                    const qrImages = document.querySelectorAll('.qr-code img');
+                    qrImages.forEach(img => {
+                        img.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://zalo.me/${zaloData.value}`;
+                    });
+                } else {
+                    console.log('ℹ️ Sử dụng Số Zalo mặc định');
+                }
+                
+            } catch (error) {
+                console.log('⚠️ Lỗi khi load dữ liệu:', error);
+            }
         }
-        
-    } catch (error) {
-        console.log('⚠️ Chưa có dữ liệu từ Admin hoặc lỗi khi load:', error);
-        // Sử dụng giá trị mặc định
-        document.getElementById('formFrame').src = DEFAULT_FORM_LINK;
-    }
-}
 
         // Hiển thị popup Zalo
         function showZaloPopup() {
@@ -860,99 +883,88 @@ if (formLinkData && formLinkData.value) {
         }
 
         // Copy số điện thoại
-       // Copy số điện thoại
-async function copyPhoneNumber() {
-    // Load số từ storage
-    const zaloData = await window.storage.get('aev_zalo_number');
-    const phoneNumber = zaloData && zaloData.value ? zaloData.value : '0394304799';
-    
-    // Copy vào clipboard
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(phoneNumber).then(function() {
-            showCopiedNotification();
-        }).catch(function(err) {
-            // Fallback nếu lỗi
-            fallbackCopy(phoneNumber);
-        });
-    } else {
-        // Fallback cho trình duyệt cũ
-        fallbackCopy(phoneNumber);
-    }
-}
-
-        // Phương thức copy dự phòng
-        function fallbackCopy(text) {
-            const textArea = document.createElement('textarea');
-            textArea.value = text;
-            textArea.style.position = 'fixed';
-            textArea.style.left = '-999999px';
-            document.body.appendChild(textArea);
-            textArea.select();
-            
-            try {
-                document.execCommand('copy');
+        async function copyPhoneNumber() {
+            //// Copy vào clipboard
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(phoneNumber).then(function() {
                 showCopiedNotification();
-            } catch (err) {
-                alert('Không thể copy tự động. Vui lòng copy số: ' + text);
-            }
-            
-            document.body.removeChild(textArea);
-        }
-
-        // Hiển thị thông báo đã copy
-        function showCopiedNotification() {
-            const notif = document.getElementById('copiedNotif');
-            notif.style.display = 'block';
-            
-            setTimeout(function() {
-                notif.style.display = 'none';
-            }, 3000);
-        }
-
-        // Đóng popup khi nhấn ESC
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape') {
-                closeZaloPopup();
-            }
-        });
-
-        function adjustIframeHeight() {
-            const iframe = document.getElementById('formFrame');
-            const loading = document.getElementById('loading');
-            
-            loading.style.display = 'none';
-            iframe.style.display = 'block';
-            
-            // Tự động điều chỉnh chiều cao
-            let height = 700;
-            
-            if (window.innerWidth < 480) {
-                height = 1000;
-            } else if (window.innerWidth < 768) {
-                height = 800;
-            } else if (window.innerWidth >= 1200) {
-                height = 900; // PC có sidebar nên form cao hơn
-            }
-            
-            iframe.style.height = height + 'px';
-            
-            window.addEventListener('resize', function() {
-                if (window.innerWidth < 480) {
-                    iframe.style.height = '1000px';
-                } else if (window.innerWidth < 768) {
-                    iframe.style.height = '800px';
-                } else if (window.innerWidth >= 1200) {
-                    iframe.style.height = '900px';
-                } else {
-                    iframe.style.height = '700px';
-                }
+            }).catch(function(err) {
+                // Fallback nếu lỗi
+                fallbackCopy(phoneNumber);
             });
+        } else {
+            // Fallback cho trình duyệt cũ
+            fallbackCopy(phoneNumber);
+        }
+    }
+
+    // Phương thức copy dự phòng
+    function fallbackCopy(text) {
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        document.body.appendChild(textArea);
+        textArea.select();
+        
+        try {
+            document.execCommand('copy');
+            showCopiedNotification();
+        } catch (err) {
+            alert('Không thể copy tự động. Vui lòng copy số: ' + text);
         }
         
-    </script>
-    <!-- Nút Admin ẩn -->
-<a href="admin.html" class="admin-button" title="Đăng nhập Admin">
-    🔐
-</a>
-</body>
-</html>
+        document.body.removeChild(textArea);
+    }
+
+    // Hiển thị thông báo đã copy
+    function showCopiedNotification() {
+        const notif = document.getElementById('copiedNotif');
+        notif.style.display = 'block';
+        
+        setTimeout(function() {
+            notif.style.display = 'none';
+        }, 3000);
+    }
+
+    // Đóng popup khi nhấn ESC
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            closeZaloPopup();
+        }
+    });
+
+    function adjustIframeHeight() {
+        const iframe = document.getElementById('formFrame');
+        const loading = document.getElementById('loading');
+        
+        loading.style.display = 'none';
+        iframe.style.display = 'block';
+        
+        // Tự động điều chỉnh chiều cao
+        let height = 700;
+        
+        if (window.innerWidth < 480) {
+            height = 1000;
+        } else if (window.innerWidth < 768) {
+            height = 800;
+        } else if (window.innerWidth >= 1200) {
+            height = 900; // PC có sidebar nên form cao hơn
+        }
+        
+        iframe.style.height = height + 'px';
+        
+        window.addEventListener('resize', function() {
+            if (window.innerWidth < 480) {
+                iframe.style.height = '1000px';
+            } else if (window.innerWidth < 768) {
+                iframe.style.height = '800px';
+            } else if (window.innerWidth >= 1200) {
+                iframe.style.height = '900px';
+            } else {
+                iframe.style.height = '700px';
+            }
+        });
+    }
+    
+</script>
