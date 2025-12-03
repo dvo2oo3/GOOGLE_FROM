@@ -575,6 +575,7 @@ s0.parentNode.insertBefore(s1,s0);
     
 <body>
     <!-- Header compact -->
+     <script src="config.js"></script>
     <div class="header">
         <div class="header-left">
             <img id="headerLogo" src="" alt="AEV Logo" class="logo" style="display:none;">
@@ -762,115 +763,108 @@ s0.parentNode.insertBefore(s1,s0);
         });
 
         // Hàm load dữ liệu từ storage
-        async function loadAdminData() {
-            try {
-                console.log('🔍 Đang kiểm tra dữ liệu từ Admin...');
-                
-                // 1. Load Form Link từ admin
-                const formLinkData = await window.storage.get('aev_form_link');
-                if (formLinkData && formLinkData.value) {
-                    console.log('✅ Đã load Form Link từ Admin:', formLinkData.value);
-                    document.getElementById('formFrame').src = formLinkData.value;
-                } else {
-                    console.log('⚠️ Chưa có Form Link! Vui lòng vào Admin Panel để cập nhật.');
-                    // Hiển thị thông báo thay vì form
-                    document.getElementById('loading').innerHTML = `
-                        <div style="text-align: center; padding: 60px 20px;">
-                            <div style="font-size: 48px; margin-bottom: 20px;">⚠️</div>
-                            <h3 style="color: #dc3545; margin-bottom: 15px;">Chưa có biểu mẫu</h3>
-                            <p style="color: #666; margin-bottom: 20px;">
-                                Vui lòng vào Admin Panel để cập nhật link Google Form.
-                            </p>
-                            <a href="admin.html" style="
-                                display: inline-block;
-                                padding: 12px 30px;
-                                background: linear-gradient(135deg, #4A90E2 0%, #50C878 100%);
-                                color: white;
-                                border-radius: 8px;
-                                text-decoration: none;
-                                font-weight: 600;
-                            ">
-                                🔧 Vào Admin Panel
-                            </a>
-                        </div>
-                    `;
-                }
-
-                // 2. Load Logo từ admin
-                const logoData = await window.storage.get('aev_logo_base64');
-                if (logoData && logoData.value) {
-                    console.log('✅ Đã load Logo từ Admin');
-                    
-                    const headerLogo = document.getElementById('headerLogo');
-                    const sidebarLogo = document.getElementById('sidebarLogo');
-                    
-                    // Cập nhật src với ảnh base64
-                    headerLogo.src = logoData.value;
-                    sidebarLogo.src = logoData.value;
-                    
-                    // Xóa onerror để tránh fallback
-                    headerLogo.onerror = null;
-                    sidebarLogo.onerror = null;
-                    
-                    // Hiển thị logo
-                    headerLogo.style.display = 'block';
-                    sidebarLogo.style.display = 'block';
-                } else {
-                    console.log('ℹ️ Chưa có logo trong storage');
-                }
-
-                // 3. Load Sidebar Content từ admin
-                const sidebarData = await window.storage.get('aev_sidebar_content');
-                if (sidebarData && sidebarData.value) {
-                    console.log('✅ Đã load Sidebar Content từ Admin');
-                    const content = JSON.parse(sidebarData.value);
-                    
-                    // Cập nhật các phần tử sidebar với dữ liệu đã lưu
-                    const sidebarElements = {
-                        'sidebarGuideTitle': content.guideTitle,
-                        'sidebarGuideContent': content.guideContent,
-                        'sidebarTimeTitle': content.timeTitle,
-                        'sidebarTimeContent': content.timeContent,
-                        'sidebarConfirmTitle': content.confirmTitle,
-                        'sidebarConfirmContent': content.confirmContent,
-                        'sidebarSupportTitle': content.supportTitle,
-                        'sidebarSupportContent': content.supportContent
-                    };
-                    
-                    for (const [id, value] of Object.entries(sidebarElements)) {
-                        const element = document.getElementById(id);
-                        if (element && value) {
-                            element.textContent = value;
-                        }
-                    }
-                } else {
-                    console.log('ℹ️ Sử dụng Sidebar Content mặc định');
-                }
-
-                // 4. Load Số Zalo từ admin
-                const zaloData = await window.storage.get('aev_zalo_number');
-                if (zaloData && zaloData.value) {
-                    console.log('✅ Đã load Số Zalo từ Admin:', zaloData.value);
-                    
-                    // Cập nhật số Zalo ở popup
-                    const phoneNumberElements = document.querySelectorAll('.phone-number');
-                    phoneNumberElements.forEach(el => {
-                        el.textContent = zaloData.value;
-                    });
-                    
-                    // Cập nhật QR code
-                    const qrImages = document.querySelectorAll('.qr-code img');
-                    qrImages.forEach(img => {
-                        img.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://zalo.me/${zaloData.value}`;
-                    });
-                } else {
-                    console.log('ℹ️ Sử dụng Số Zalo mặc định');
-                }
-                
-            } catch (error) {
-                console.log('⚠️ Lỗi khi load dữ liệu:', error);
-            }
+// Hàm load dữ liệu từ storage HOẶC config.js
+async function loadAdminData() {
+    try {
+        console.log('🔍 Đang load cấu hình...');
+        
+        // 1. LOAD FORM LINK
+        // Ưu tiên: Storage > Config.js
+        const formLinkData = await window.storage.get('aev_form_link');
+        const formLink = formLinkData?.value || CONFIG.formLink;
+        
+        if (formLink) {
+            console.log('✅ Đã load Form Link:', formLink);
+            document.getElementById('formFrame').src = formLink;
+        } else {
+            console.log('⚠️ Chưa có Form Link!');
+            document.getElementById('loading').innerHTML = `
+                <div style="text-align: center; padding: 60px 20px;">
+                    <div style="font-size: 48px; margin-bottom: 20px;">⚠️</div>
+                    <h3 style="color: #dc3545; margin-bottom: 15px;">Chưa có biểu mẫu</h3>
+                    <p style="color: #666; margin-bottom: 20px;">
+                        Vui lòng cập nhật link trong file <code>config.js</code><br>
+                        hoặc vào Admin Panel để cập nhật.
+                    </p>
+                    <a href="admin.html" style="
+                        display: inline-block;
+                        padding: 12px 30px;
+                        background: linear-gradient(135deg, #4A90E2 0%, #50C878 100%);
+                        color: white;
+                        border-radius: 8px;
+                        text-decoration: none;
+                        font-weight: 600;
+                    ">
+                        🔧 Vào Admin Panel
+                    </a>
+                </div>
+            `;
         }
+
+        // 2. LOAD LOGO
+        const logoData = await window.storage.get('aev_logo_base64');
+        const logoSrc = logoData?.value || CONFIG.logoPath;
+        
+        if (logoSrc) {
+            console.log('✅ Đã load Logo');
+            const headerLogo = document.getElementById('headerLogo');
+            const sidebarLogo = document.getElementById('sidebarLogo');
+            
+            headerLogo.src = logoSrc;
+            sidebarLogo.src = logoSrc;
+            headerLogo.style.display = 'block';
+            sidebarLogo.style.display = 'block';
+            headerLogo.onerror = null;
+            sidebarLogo.onerror = null;
+        } else {
+            console.log('ℹ️ Chưa có logo');
+        }
+
+        // 3. LOAD SIDEBAR CONTENT
+        const sidebarData = await window.storage.get('aev_sidebar_content');
+        let sidebar;
+        
+        if (sidebarData?.value) {
+            console.log('✅ Load Sidebar từ Storage');
+            sidebar = JSON.parse(sidebarData.value);
+        } else {
+            console.log('✅ Load Sidebar từ Config.js');
+            sidebar = CONFIG.sidebar;
+        }
+        
+        // Cập nhật các phần tử sidebar
+        document.getElementById('sidebarGuideTitle').textContent = sidebar.guideTitle || '📋 Hướng dẫn';
+        document.getElementById('sidebarGuideContent').textContent = sidebar.guideContent || '';
+        document.getElementById('sidebarTimeTitle').textContent = sidebar.timeTitle || '⏱️ Thời gian';
+        document.getElementById('sidebarTimeContent').textContent = sidebar.timeContent || '';
+        document.getElementById('sidebarConfirmTitle').textContent = sidebar.confirmTitle || '✉️ Xác nhận';
+        document.getElementById('sidebarConfirmContent').textContent = sidebar.confirmContent || '';
+        document.getElementById('sidebarSupportTitle').textContent = sidebar.supportTitle || '💬 Cần hỗ trợ?';
+        document.getElementById('sidebarSupportContent').textContent = sidebar.supportContent || '';
+
+        // 4. LOAD SỐ ZALO
+        const zaloData = await window.storage.get('aev_zalo_number');
+        const zaloNumber = zaloData?.value || CONFIG.zaloNumber;
+        
+        console.log('✅ Đã load Số Zalo:', zaloNumber);
+        
+        // Cập nhật số Zalo trong popup
+        document.querySelectorAll('.phone-number').forEach(el => {
+            el.textContent = zaloNumber;
+        });
+        
+        // Cập nhật QR code
+        document.querySelectorAll('.qr-code img').forEach(img => {
+            img.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://zalo.me/${zaloNumber}`;
+        });
+        
+        console.log('✅ Hoàn tất load cấu hình!');
+        
+    } catch (error) {
+        console.error('❌ Lỗi khi load:', error);
+        alert('Lỗi: ' + error.message);
+    }
+}
 
         // Hiển thị popup Zalo
         function showZaloPopup() {
